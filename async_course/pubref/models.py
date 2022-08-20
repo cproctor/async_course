@@ -57,7 +57,6 @@ class Publication(models.Model):
 
     def get_absolute_url(self):
         return str(reverse_lazy('pubref:detail', args=[self.slug]))
-        #return f"/publications/{self.slug}"
 
     class Meta:
         ordering = ['apa_text']
@@ -110,7 +109,6 @@ class PandocMarkdownModel(models.Model):
         for slug in self.get_citation_slugs():
             try:
                 pub = Publication.objects.get(slug=slug)
-                print(pub)
                 publications.append(pub)
                 self.html = replace_reference_link(self.html, pub)
             except Publication.DoesNotExist:
