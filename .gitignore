@@ -2,3 +2,4 @@
 *.pyc
 *.swp
 *.swo
+async_course/db.sqlite3
