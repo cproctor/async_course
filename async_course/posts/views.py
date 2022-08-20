@@ -4,9 +4,9 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
-from .models import Post
-from .forms import PostForm, PostReplyForm
-from common.mixins import AuthorOrAdminRequiredMixin
+from posts.models import Post
+from posts.forms import PostForm, PostReplyForm
+from profiles.mixins import AuthorOrTeacherRequiredMixin
 
 class PostList(ListView):
     queryset = Post.objects.filter(parent=None)
@@ -37,7 +37,7 @@ class NewPost(LoginRequiredMixin, CreateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class EditPost(AuthorOrAdminRequiredMixin, UpdateView):
+class EditPost(AuthorOrTeacherRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = "posts/post_form.html"
@@ -110,7 +110,7 @@ class UpvotePost(LoginRequiredMixin, UpdateView):
         is_author = obj.author == self.request.user
         if not voted and not is_author:
             obj.upvotes.create(voter=self.request.user)
-        return redirect('posts:list')
+        return redirect('posts:detail', pk=obj.id)
 
 class ShowPost(DetailView):
     model = Post

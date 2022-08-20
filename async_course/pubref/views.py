@@ -4,9 +4,9 @@ from django.views.generic.edit import CreateView, UpdateView, FormView, DeleteVi
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from common.mixins import AuthorOrAdminRequiredMixin
-from .models import Publication
-from .forms import AddPublicationsForm, EditPublicationForm
+from profiles.mixins import AuthorOrTeacherRequiredMixin
+from pubref.models import Publication
+from pubref.forms import AddPublicationsForm, EditPublicationForm
 
 class PublicationList(LoginRequiredMixin, ListView):
     model = Publication
@@ -35,7 +35,7 @@ class ShowPublication(LoginRequiredMixin, DetailView):
         context['posts'] = self.get_object().post_set.all()
         return context
 
-class EditPublication(AuthorOrAdminRequiredMixin, UpdateView):
+class EditPublication(AuthorOrTeacherRequiredMixin, UpdateView):
     model = Publication
     form_class = EditPublicationForm
     author_attribute_name = "contributor"
@@ -56,7 +56,7 @@ class EditPublication(AuthorOrAdminRequiredMixin, UpdateView):
             context['form'] = form
             return render(self.request, self.template_name, context)
 
-class DeletePublication(AuthorOrAdminRequiredMixin, DeleteView):
+class DeletePublication(AuthorOrTeacherRequiredMixin, DeleteView):
     model = Publication
     author_attribute_name = "contributor"
     success_url = reverse_lazy('pubref:list')

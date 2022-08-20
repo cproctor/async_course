@@ -4,11 +4,12 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from common.mixins import AdminRequiredMixin
-from .models import Assignment
-from .forms import AssignmentForm
+from django.contrib.auth.models import User
+from profiles.mixins import TeacherRequiredMixin
+from assignments.models import Assignment, Submission
+from assignments.forms import AssignmentForm
 
-class AssignmentList(LoginRequiredMixin, ListView):
+class ListAssignments(LoginRequiredMixin, ListView):
     queryset = Assignment.objects.filter(active=True)
     context_object_name = "assignments"
 
@@ -19,7 +20,7 @@ class AssignmentList(LoginRequiredMixin, ListView):
         context['assignments_with_status'] = aws
         return context
 
-class NewAssignment(AdminRequiredMixin, CreateView):
+class NewAssignment(TeacherRequiredMixin, CreateView):
     model = Assignment
     form_class = AssignmentForm
     template_name = "assignments/assignment_form.html"
@@ -42,7 +43,7 @@ class NewAssignment(AdminRequiredMixin, CreateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class EditAssignment(AdminRequiredMixin, UpdateView):
+class EditAssignment(TeacherRequiredMixin, UpdateView):
     model = Assignment
     form_class = AssignmentForm
     template_name = "assignments/assignment_form.html"
@@ -67,4 +68,21 @@ class EditAssignment(AdminRequiredMixin, UpdateView):
 
 class ShowAssignment(LoginRequiredMixin, DetailView):
     model = Assignment
+
+class ShowAssignmentRoster(DetailView):
+    model = Assignment
+    template_name = "assignments/assignment_roster.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+class ShowAssignmentSubmissions(ListView):
+    model = Submission
+
+
+
+
+
+
 

@@ -7,7 +7,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Profile
 from .forms import ProfileForm
 from posts.models import Post
-from common.mixins import AuthorOrAdminRequiredMixin
+from profiles.mixins import AuthorOrTeacherRequiredMixin
 from lai_619.grades import LAI619Grader
 
 class ShowProfile(DetailView):
@@ -43,7 +43,7 @@ class ShowGrades(DetailView):
         context['grades'] = grader.get_grades(self.request.user)
         return context
 
-class EditProfile(AuthorOrAdminRequiredMixin, UpdateView):
+class EditProfile(AuthorOrTeacherRequiredMixin, UpdateView):
     model = Profile
     form_class = ProfileForm
     template_name = "profiles/profile_form.html"

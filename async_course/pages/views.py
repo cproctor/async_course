@@ -4,15 +4,15 @@ from django.views.generic.edit import CreateView, UpdateView, FormView
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
-from common.mixins import AdminRequiredMixin
-from .models import Page
-from .forms import PageForm
+from profiles.mixins import TeacherRequiredMixin
+from pages.models import Page
+from pages.forms import PageForm
 
-class PageList(AdminRequiredMixin, ListView):
+class PageList(TeacherRequiredMixin, ListView):
     model = Page
     context_object_name = "pages"
 
-class NewPage(AdminRequiredMixin, CreateView):
+class NewPage(TeacherRequiredMixin, CreateView):
     model = Page
     form_class = PageForm
     template_name = "pages/page_form.html"
@@ -35,7 +35,7 @@ class NewPage(AdminRequiredMixin, CreateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
     
-class EditPage(AdminRequiredMixin, UpdateView):
+class EditPage(TeacherRequiredMixin, UpdateView):
     model = Page
     form_class = PageForm
     template_name = "pages/page_form.html"
