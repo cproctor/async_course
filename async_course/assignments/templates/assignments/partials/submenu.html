@@ -1,0 +1,16 @@
+<nav id="submenu">
+	<div class="menu-left">
+        <div class="menu-item">
+        {% if assignment %}
+            {% if form %}
+                <a href="{% url 'assignments:detail' assignment.slug %}">Show</a>
+            {% else %}
+                <a href="{% url 'assignments:edit' assignment.slug %}">Edit</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'assignments:new' %}">New assignment</a>
+        {% endif %}
+        </div>
+	</div>
+</nav>
+

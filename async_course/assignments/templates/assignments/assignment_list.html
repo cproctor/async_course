@@ -1,0 +1,14 @@
+{% extends "assignments/base.html" %}
+
+{% block content %}
+<h1>Assignments</h1>
+<ul>
+    {% for status, assn in assignments_with_status %}
+    <li>{{status}} <a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
+    {% endfor %}
+{% for post in posts %}
+  {% include "posts/partials/post_li.html" %}
+{% endfor %}
+</ul>
+{% endblock %}
+

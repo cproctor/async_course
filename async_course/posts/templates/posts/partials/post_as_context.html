@@ -1,0 +1,17 @@
+{% load post_tags %}
+
+<article class="post">
+    <h1>
+      <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
+    </h1>
+    <div class="post-details">
+      {% with static=True %}
+        {% include "posts/partials/upvote.html" %}
+      {% endwith %}
+      {{post.score}} point{{post.score|pluralize}} by 
+      {% with user=post.author %}{% include "profiles/partials/user_link.html" %}{% endwith %}
+      {{post.humanized_creation_date}}
+  </div>
+  {{post.html|safe}}
+</article>
+

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block menu %}
+  {% with menu_section="pages" %}
+    {% include "menu.html" %}
+  {% endwith %}
+{% endblock %}
+
+{% block submenu %}
+  {% if user.is_superuser %}
+    <nav id="submenu">
+	    <div class="menu-left">
+            <div class="menu-item">
+                <a href="{% url 'pages:new' %}">New page</a>
+            </div>
+        </div>
+    </nav>
+
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+<h1>Pages</h1>
+  <ul>
+    {% for page in pages %}
+      {% include "pages/partials/page_li.html" %}
+    {% endfor %}
+  </ul>
+{% endblock %}
+

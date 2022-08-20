@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<ol start="0">
+    <li>[<a href="{% url 'posts:new' %}">New post</a>]</li>
+{% for post in posts %}
+  {% include "posts/partials/post_li.html" %}
+{% endfor %}
+</ol>
+{% endblock %}

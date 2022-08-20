@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block menu %}
+  {% with menu_section=profile.user.username %}
+    {% include "menu.html" %}
+  {% endwith %}
+{% endblock %}
+
+{% block submenu %}
+  {% if profile.user == user or user.is_superuser %}
+    {% include "profiles/partials/submenu.html" %}
+  {% endif %}
+{% endblock %}

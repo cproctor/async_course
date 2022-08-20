@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{prompt}}</h1>
+{% if parent %}
+  {% with post=parent %}
+    {% include "posts/partials/post_as_context.html" %}
+  {% endwith %}
+{% endif %}
+<form action="{{ url }}" method="POST" class="async-form">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
+

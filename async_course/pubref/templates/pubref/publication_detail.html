@@ -1,0 +1,16 @@
+{% extends "pubref/base.html" %}
+
+{% block content %}
+<h1>{{publication.slug}}</h2>
+<p class="pub">{{publication.apa_html|safe}}</p>
+{% if posts %}
+<h2>Cited in</h2>
+<ol>
+    {% for post in posts %}
+      {% include "posts/partials/post_li.html" %}
+    {% endfor %}
+</ol>
+{% endif %}
+{% endblock %}
+
+

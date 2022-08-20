@@ -1,0 +1,134 @@
+body {
+	font-family: Helvetica;
+	margin: 0;
+}
+#page-wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+}
+#main-content {
+	flex: 1;
+}
+#main-content-container {
+  padding: 0 8px;
+}
+.journal-issue-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+#footer {
+  background-color: grey;
+	display: flex;
+}
+#footer a {
+	color: white;
+	text-decoration: none;
+}
+.footer-item {
+	padding:10px;
+}
+.message {
+	margin: 10px 0;
+	padding: 10px;
+	border: 1px solid black;
+	border-radius: 5px;
+	background-color: #ddd;
+}
+
+form.actions {
+  display: inline;
+}
+article.revision.current {
+	background-color: #eee;
+}
+article.revision {
+	padding: 8px;
+}
+
+#manuscript-layout {
+  display: flex;
+	align-items: stretch;
+	height: 100%;
+}
+.manuscript-sidebar {
+	background-color: #ddd;
+	width: 200px;
+}
+.manuscript-content {
+  flex: 1 1;
+}
+.manuscript-header {
+  padding: 12px;
+}
+.manuscript-text {
+  padding: 12px;
+}
+.revision-form-title {
+  padding: 0 12px 12px 0;
+}
+.revision-form-title input {
+  width: 100%;
+  font-size: 3em;
+}
+.process-chart {
+	display: flex;
+	width: 100%;
+}
+.process-chart-col {
+	flex: 1 1;
+	display: flex;
+	flex-direction: column;
+}
+.cell-header {
+	font-weight: bold;
+	text-align: center;
+}
+.process-chart-cell {
+  border: 1px solid black;
+	border-radius: 4px;
+	margin: 8px;
+	padding: 4px;
+}
+.process-chart-cell .title {
+	font-weight: bold;
+}
+.authorship-acknowledgement {
+    border: 1px solid black;
+    border-radius: 4px;
+    margin: 8px;
+    padding: 4px;
+    font-style: italic;
+}
+.manuscript-revision-tabs {
+  display: flex;
+  flex-direction: row;
+  text-align: center;
+  border-top: 8px solid #ddd;
+  background-color: #ddd;
+}
+.manuscript-revision-tabs .tab {
+  padding: 4px;
+  width: 25%;
+}
+.manuscript-revision-tabs .tab.current {
+  background-color: white;
+}
+.explanation {
+  font-style: italic;
+}
+.bold {
+  font-weight: bold;
+}
+.decision {
+  font-style: italic;
+}
+.journal-issue-summary {
+  border: 1px solid black;
+  border-radius: 4px;
+  padding: 4px;
+  margin: 8px;
+}
+.title {
+  font-style: italic;
+}

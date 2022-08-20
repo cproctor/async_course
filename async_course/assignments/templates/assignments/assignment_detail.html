@@ -1,0 +1,6 @@
+{% extends "assignments/base.html" %}
+
+{% block content %}
+<h1>{{assignment.title}}</h1>
+{{assignment.html|safe}}
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "pubref/base.html" %}
+
+{% block content %}
+<h1>References</h1>
+<p><a href="{% url 'pubref:add' %}">Add publications</a></p>
+<ul class="bibliography">
+{% for publication in publications %}
+  {% include "pubref/partials/publication_li.html" %}
+{% endfor %}
+</ul>
+{% endblock %}
+

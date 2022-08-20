@@ -1,0 +1,40 @@
+{% load page_tags %}
+{% pages_in_menu as pages %}
+<nav id="menu">
+	<div class="menu-left">
+		<div class="menu-item clickable{% if menu_section == 'public' %} current{% endif %}">
+      <a href="{% url 'common:home' %}">Home</a>
+    </div>
+    {% for page in pages %}
+	    <div class="menu-item clickable{% if menu_section == page.slug %} current{% endif %}">
+            <a href="{% url 'pages:detail' page.slug %}">{{page.menu_label}}</a>
+        </div>
+    {% endfor %}
+      {% if not SITE_FROZEN %}
+	    <div class="menu-item clickable{% if menu_section == 'assignments' %} current{% endif %}">
+          <a href="{% url 'assignments:list' %}">Assignments</a>
+        </div>
+	    <div class="menu-item clickable{% if menu_section == 'publications' %} current{% endif %}">
+          <a href="{% url 'pubref:list' %}">References</a>
+        </div>
+	</div>
+	<div class="menu-right">
+	    {% if user.is_superuser %}
+	    <div class="menu-item clickable{% if menu_section == 'pages' %} current{% endif %}">
+          <a href="{% url 'pages:list' %}">Pages</a>
+        </div>
+		  <div class="menu-item clickable">
+            <a href="{% url 'admin:index' %}">Admin</a>
+          </div>
+	    {% endif %}
+		{% if user.is_authenticated %}
+		  <div class="menu-item clickable {% if menu_section == user.username %} current{% endif %}">
+              <a href="{% url 'profiles:detail' user.username %}">{{user.username}}</a>
+          </div>
+		  <div class="menu-item clickable"><a href="{% url 'logout' %}">Log out</a></div>
+		{% else %}
+		  <div class="menu-item clickable"><a href="{% url 'login' %}">Log in</a></div>
+		{% endif %}
+	  {% endif %}
+	</div>
+</nav>

@@ -1,0 +1,7 @@
+{% if user == request.user %}
+    you
+{% else %}
+    <a href="{% url 'profiles:detail' user.username %}">
+        {{user.first_name}} {{user.last_name}}
+    </a>
+{% endif %}

@@ -1,0 +1,12 @@
+{% load post_tags %}
+
+{% did_upvote request.user post as upvoted %}
+{% if upvoted %}
+  ❤️
+{% elif post.author != request.user and not static %}
+  <form action="{% url 'posts:upvote' post.id %}" method="post" class="post-upvote">
+    {% csrf_token %}
+    <input type="submit" value="↑">
+  </form>
+{% endif %}
+

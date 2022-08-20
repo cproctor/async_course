@@ -1,0 +1,24 @@
+{% extends "profiles/base.html" %}
+
+{% block content %}
+  <h1>Grades</h1>
+  <table>
+    <tr>
+      <th>Item</th>
+      <th>Description</th>
+      <th>Score</th>
+     </tr>
+  {% for item in grades.items %}
+    <tr>
+        <td>{{item.name}}</td>
+        <td>{{item.description}}</td>
+        <td>{{item.score}}</td>
+    </tr>
+  {% endfor %}
+  <tr>
+      <td colspan="2">Total</td>
+      <td>{{grades.total}}</td>
+  </tr>
+  </table>
+{% endblock %}
+

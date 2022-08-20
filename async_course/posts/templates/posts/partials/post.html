@@ -1,0 +1,39 @@
+{% load post_tags %}
+
+<article class="post">
+    <h1>
+        {% if nested %} 
+            <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
+        {% else %}
+            {{post.title}}
+        {% endif %}
+    </h1>
+    <div class="post-details">
+      {% include "posts/partials/upvote.html" %}
+      {{post.score}} point{{post.score|pluralize}} 
+      | By {% with user=post.author %}
+      {% include "profiles/partials/user_link.html" %}{% endwith %}
+      {{post.humanized_creation_date}}
+      {% if post.parent and not nested %}
+      in response to <a href="{% url 'posts:detail' post.parent.id %}">{{post.parent.title}}</a>
+      {% endif %}
+    {% if post.editable %}
+      {% if request.user.is_superuser or request.user == post.author %}
+      | <a href="{% url 'posts:edit' post.id %}">Edit</a>
+      {% endif %}
+    {% endif %}
+    {% if request.user %}
+      | <a href="{% url 'posts:reply' post.id %}">Reply</a>
+    {% endif %}
+  </div>
+    {{post.html|safe}}
+    {% if post.child_posts.exists %}
+    <div class="children">
+      {% for child in post.child_posts.all %}
+        {% with post=child nested=True %}
+            {% include "posts/partials/post.html" %}
+        {% endwith %}
+      {% endfor %}
+    </div>
+    {% endif %}
+</article>

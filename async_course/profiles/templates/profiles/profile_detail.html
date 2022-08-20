@@ -1,0 +1,14 @@
+{% extends "profiles/base.html" %}
+
+{% block content %}
+  <h1>{{profile.user.first_name}} {{profile.user.last_name}}</h1>
+  {{profile.html|safe}}
+  <h2>Posts</h2>
+  {% if posts %}
+    <ol>
+      {% for post in posts %}
+        {% include "posts/partials/post_li.html" %}
+      {% endfor %}
+    </ol>
+  {% endif %}
+{% endblock %}

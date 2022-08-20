@@ -1,0 +1,13 @@
+{% load post_tags %}
+
+<li class="post{% if post.pinned %} pinned{% endif %}">
+  <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
+  <div class="post-details">
+      {% include "posts/partials/upvote.html" %}
+      {{post.score}} point{{post.score|pluralize}} 
+      | By {% with user=post.author %}
+      {% include "profiles/partials/user_link.html" %}{% endwith %}
+      {{post.humanized_creation_date}}
+  </div>
+</li>
+

@@ -1,0 +1,12 @@
+{% extends "pubref/base.html" %}
+
+{% block content %}
+<h1>Are you sure you want to delete {{publication.slug}}?</h1>
+{{publication.apa_html|safe}}
+<form action="{% url 'pubref:delete' publication.slug %}" method="POST" class="async-form">
+    {% csrf_token %}
+    {{form.as_div}}
+    <input type="submit" value="Delete">
+</form>
+{% endblock %}
+

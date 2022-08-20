@@ -1,0 +1,12 @@
+{% extends "pages/base.html" %}
+
+{% block content %}
+<h1>{{prompt}}</h1>
+<form action="{{ url }}" method="POST" class="async-form">
+    {% csrf_token %}
+    {{ form.as_div }}
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
+
+

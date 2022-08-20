@@ -1,0 +1,44 @@
+/* Style sheet for async app */
+
+#main-content {
+  margin: 0 10px;
+}
+form.async-form {
+}
+form.async-form label {
+   width: 80px;
+   display: inline-block;
+}
+
+form.async-form input#id_title {
+    width: 400px;
+}
+form.async-form textarea#id_markdown, form.async-form textarea#id_bibtex {
+    width: calc(100% - 100px);
+}
+
+.post-upvote {
+    display: inline;
+}
+.post-upvote input {
+    border: none;
+    background-color: initial;
+    cursor: pointer;
+}
+.post .children {
+  margin-left: 10px;
+}
+.pub-reference, .csl-entry {
+  margin-left: 20px;
+  text-indent: -20px;
+  list-style: none;
+}
+.bibliography {
+    padding-left: 0;
+}
+
+.edit-page {
+  position: absolute;
+  margin: 8px;
+  right: 12px;
+}
