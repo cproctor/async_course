@@ -2,10 +2,13 @@
 
 {% block content %}
 <h1>{{prompt}}</h1>
-<form action="{{ url }}" method="POST" class="async-form">
+<form action="{{ url }}" method="POST" class="async-form grow-4">
+    {{ form.as_p }}
     {% csrf_token %}
-    {{ form.as_div }}
-    <input type="submit" value="Submit">
+    <p>
+      <label></label>
+      <input type="submit" value="Submit">
+    </p>
 </form>
 {% endblock %}
 

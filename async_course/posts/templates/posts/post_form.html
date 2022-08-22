@@ -7,10 +7,13 @@
     {% include "posts/partials/post_as_context.html" %}
   {% endwith %}
 {% endif %}
-<form action="{{ url }}" method="POST" class="async-form">
+<form action="{{ url }}" method="POST" class="async-form md-2">
+    {{ form.as_p }}
     {% csrf_token %}
-    {{ form.as_div }}
-    <input type="submit" value="Submit">
+    <p>
+      <label></label>
+      <input type="submit" value="Submit">
+    </p>
 </form>
 {% endblock %}
 

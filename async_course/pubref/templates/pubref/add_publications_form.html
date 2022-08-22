@@ -4,10 +4,13 @@
 <h1>Add Publications</h1>
 <p>Add new publications to the site by pasting bibtex in the field below.
 </p>
-<form action="{% url 'pubref:add' %}" method="POST" class="async-form">
+<form action="{% url 'pubref:add' %}" method="POST" class="async-form grow-1">
+    {{ form.as_p }}
     {% csrf_token %}
-    {{ form.as_div }}
-    <input type="submit" value="Submit">
+    <p>
+      <label></label>
+      <input type="submit" value="Submit">
+    </p>
 </form>
 {% endblock %}
 

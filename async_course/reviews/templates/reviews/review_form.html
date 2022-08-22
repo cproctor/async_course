@@ -2,9 +2,12 @@
 
 {% block content %}
 <h1>Edit review</h1>
-<form action="{% url 'reviews:edit' review.id %}" method="POST" class="async-form">
+<form action="{% url 'reviews:edit' review.id %}" method="POST" class="async-form grow-1">
+    {{ form.as_p }}
     {% csrf_token %}
-    {{ form.as_div }}
-    <input type="submit" value="Submit">
+    <p>
+      <label></label>
+      <input type="submit" value="Submit">
+    </p>
 </form>
 {% endblock %}
