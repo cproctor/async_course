@@ -21,6 +21,7 @@ def markdown_to_html(markdown):
             fin, 
             fout
         )
+        print(cmd)
         try:
             subprocess.run(cmd, shell=True, check=True)
         except subprocess.CalledProcessError as e:

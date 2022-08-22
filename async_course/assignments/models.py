@@ -4,6 +4,8 @@ from django.conf import settings
 from os.path import splitext
 from django.urls import reverse_lazy
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.core.validators import FileExtensionValidator
 
 class Assignment(PandocMarkdownModel):
     due_date = models.DateTimeField(null=True, blank=True)
@@ -44,6 +46,18 @@ def upload_filename(instance, original_filename):
         version
     ]) + suffix
 
+check_file_extension = FileExtensionValidator(
+        allowed_extensions=settings.UPLOAD_ALLOWED_EXTENSIONS)
+
+def check_file_size(value):
+    if value.size > settings.UPLOAD_MAX_SIZE:
+        raise ValidationError("File is too large")
+
+def check_mime_type(value):
+    mime = settings.UPLOAD_ALLOWED_MIME_TYPES
+    if not (mime == '*' or value in mime):
+        raise ValidationError("Unsupported file type")
+
 class Submission(models.Model):
     date_created = models.DateTimeField(auto_now_add=True)
     assignment = models.ForeignKey(Assignment, related_name="submissions",
@@ -51,10 +65,13 @@ class Submission(models.Model):
     author = models.ForeignKey(User, related_name="submissions", 
             on_delete=models.CASCADE)
     version = models.IntegerField()
-    upload = models.FileField(upload_to=upload_filename)
+    upload = models.FileField(upload_to=upload_filename, 
+            validators=[check_file_extension, check_file_size])
+    mime = models.CharField(max_length=200, validators=[check_mime_type])
     shared = models.BooleanField(default=False)
 
-    def get_next_version(self, author, assignment):
+    @classmethod
+    def get_next_version(cls, author, assignment):
         """Returns the next version number for the author and assignment.
         """
         return Submission.objects.filter(author=author, assignment=assignment).count()

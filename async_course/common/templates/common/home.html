@@ -1,4 +1,23 @@
 {% extends "base.html" %}
 
-HOME
+{% block menu %}
+<nav id="menu">
+  <div class="menu-left">
+  </div>
+  <div class="menu-right">
+    <div class="menu-item clickable"><a href="{% url 'login' %}">Log in</a></div>
+ </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<h1>Welcome to LAI 619</h1>
+
+<form action="{% url 'login' %}" method="POST" class="async-form">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Log in">
+</form>
+
+{% endblock %}
 

@@ -6,7 +6,7 @@ class TeacherRequiredMixin(LoginRequiredMixin):
 
     def dispatch(self, request, *args, **kwargs):
         if not request.user.profile.is_teacher:
-            return redirect("public:home")
+            return redirect("common:home")
         return super().dispatch(request, *args, **kwargs)
 
 class AuthorOrTeacherRequiredMixin(LoginRequiredMixin):
@@ -14,9 +14,11 @@ class AuthorOrTeacherRequiredMixin(LoginRequiredMixin):
     """
     author_attribute_name = "author"
 
+    def get_object_author(self):
+        return getattr(self.get_object(), self.author_attribute_name)
+
     def dispatch(self, request, *args, **kwargs):
-        author = getattr(self.get_object(), self.author_attribute_name)
-        if not (request.user == author or request.user.profile.is_teacher):
+        if not (request.user == self.get_object_author() or request.user.profile.is_teacher):
             return redirect("public:home")
         return super().dispatch(request, *args, **kwargs)
 

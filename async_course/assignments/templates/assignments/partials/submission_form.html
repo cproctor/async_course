@@ -1,0 +1,11 @@
+<form 
+    enctype="multipart/form-data" 
+    action="{% url 'assignments:submissions' assignment.slug author.username%}" 
+    method="POST" 
+    class="async-form submission"
+>
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Upload">
+</form>
+

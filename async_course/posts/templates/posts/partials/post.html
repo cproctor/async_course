@@ -26,7 +26,11 @@
       | <a href="{% url 'posts:reply' post.id %}">Reply</a>
     {% endif %}
   </div>
-    {{post.html|safe}}
+    {% if post.valid %}
+      {{post.html|safe}}
+    {% else %}
+      {{post.error}}
+    {% endif %}
     {% if post.child_posts.exists %}
     <div class="children">
       {% for child in post.child_posts.all %}

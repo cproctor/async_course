@@ -1,0 +1,11 @@
+<div class="review">
+  <details>
+      <summary>{% if reply %}Reply{% else %}Add a review{% endif %}</summary>
+    <form action="{% url 'assignments:new_review' assignment.slug author.username submission.version %}" method="POST" class="async-form">
+      {% csrf_token %}
+      {{ new_review_form.as_p }}
+      <input type="submit" value="Submit">
+    </form>
+  </details>
+</div>
+

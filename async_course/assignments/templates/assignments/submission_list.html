@@ -1,0 +1,19 @@
+{% extends "assignments/base.html" %}
+
+{% block content %}
+<h1>Submissions to {{assignment.title}}</h1>
+<p>{{status}}</p>
+<div class="submissions-reviews">
+{% for submission in submissions %}
+  {% include "assignments/partials/submission.html" %}
+  {% for review in submission.reviews.all %}
+    SUBID: {{submission.id}}
+    {% include "assignments/partials/review.html" %}
+  {% endfor %}
+  {% include "assignments/partials/review_form.html" with reply=submission.reviews.exists %}
+{% endfor %}
+{% if status != "COMPLETE" %}
+    {% include "assignments/partials/submission_form.html" %}
+{% endif %}
+</div>
+{% endblock %}

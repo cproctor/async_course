@@ -25,8 +25,8 @@ class Publication(models.Model):
 
     @classmethod
     def export_bibliography(cls):
-        with open(settings.BIBLIOGRAPHY, 'w') as fh:
-            fh.write('\n'.join(cls.objects.all()))
+        with open(settings.BIBLIOGRAHY, 'w') as fh:
+            fh.write('\n'.join([pub.validated_bibtex() for pub in Publication.objects.all()]))
 
     @classmethod
     def import_bibliography(cls, bib_string, contributor):
@@ -49,6 +49,28 @@ class Publication(models.Model):
                 except FieldIsMissing as e:
                     results.append({"pub": pub, "result": f"error: {e}"})
         return results
+
+    def validated_bibtex(self):
+        """Returns a bibtex string which has passed through pybtex
+        """
+        return parse_string(self.bibtex, 'bibtex').to_string('bibtex')
+
+    def recompile_citing_documents(self):
+        """Recompile markdown for all citing documents. 
+        Should be used after the publication changes. 
+        """
+        relations = [
+            'assignment_set', 
+            'page_set', 
+            'post_set', 
+            'profile_set', 
+            'review_set', 
+        ]
+        for relation in relations:
+            for doc in getattr(self, relation).all():
+                doc.compile_markdown()
+                doc.save()
+                print(doc)
 
     def get_apa(self, output='html'):
         """Generates HTML for the entry in APA format.

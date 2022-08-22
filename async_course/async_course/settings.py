@@ -99,7 +99,8 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
@@ -124,6 +125,9 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = "/tmp"
 MEDIA_URL = "/files/"
 MEDIA_PREFIX = "LAI_619_2022"
+UPLOAD_MAX_SIZE = 20971520 #20MB
+UPLOAD_ALLOWED_EXTENSIONS = ['pdf', 'doc', 'docx', 'odt', 'txt', 'rtf']
+UPLOAD_ALLOWED_MIME_TYPES = '*'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -131,7 +135,7 @@ MEDIA_PREFIX = "LAI_619_2022"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 PANDOC = "pandoc"
-BIBLIOGRAHY = "/Users/chrisp/zotero.bib"
+BIBLIOGRAHY = "async.bib"
 CSL = "/Users/chrisp/.pandoc/csl/apa-7th-edition.csl"
 TMP_DIR = "/tmp"
 

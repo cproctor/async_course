@@ -1,0 +1,25 @@
+{% extends "assignments/base.html" %}
+
+{% block content %}
+<h1>{{assignment.title}} Roster</h1>
+<table>
+  <tr>
+    <th>User</th>
+    <th>Status</th>
+  </tr>
+  {% for user, status in roster %}
+    <tr>
+      <td>
+        <a href="{% url 'profiles:detail' user.username %}">
+          {{user.first_name}} {{user.last_name}}
+        </a>
+      </td>
+      <td>
+        <a href="{% url 'assignments:submissions' assignment.slug user.username %}">
+          {{status}}
+        </a>
+      </td>
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}

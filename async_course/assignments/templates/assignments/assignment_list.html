@@ -4,7 +4,15 @@
 <h1>Assignments</h1>
 <ul>
     {% for status, assn in assignments_with_status %}
-    <li>{{status}} <a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
+    <li>
+      {% if user.profile.is_student %}
+        <a href="{% url 'assignments:submissions' assn.slug user.username %}">
+          {{status}} 
+        </a>
+        <a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
+      {% else %}
+        <a href="{% url 'assignments:roster' assn.slug %}">{{assn.title}}</a></li>
+      {% endif %}
     {% endfor %}
 {% for post in posts %}
   {% include "posts/partials/post_li.html" %}

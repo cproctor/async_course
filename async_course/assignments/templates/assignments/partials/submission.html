@@ -1,0 +1,8 @@
+<div class="submission">
+    <a href="{% url 'assignments:download_submission' assignment.slug author.username submission.version %}">
+        Version {{submission.version}}
+    </a>
+</div>
+{% for review in submission.reviews.all %}
+  {% include "assignments/partials/review.html" %}
+{% endfor %}

@@ -1,16 +1,30 @@
 <nav id="submenu">
-	<div class="menu-left">
+  <div class="menu-left">
+    {% if user.profile.is_teacher %}
+    <div class="menu-item">
+      <a href="{% url 'assignments:new' %}">New assignment</a>
+    </div>
+    {% endif %}
+    {% if assignment %}
+      <div class="menu-item">
+        <a href="{% url 'assignments:detail' assignment.slug %}">Description</a>
+      </div>
+      {% if user.profile.is_teacher %}
         <div class="menu-item">
-        {% if assignment %}
-            {% if form %}
-                <a href="{% url 'assignments:detail' assignment.slug %}">Show</a>
-            {% else %}
-                <a href="{% url 'assignments:edit' assignment.slug %}">Edit</a>
-            {% endif %}
-        {% else %}
-            <a href="{% url 'assignments:new' %}">New assignment</a>
-        {% endif %}
+          <a href="{% url 'assignments:edit' assignment.slug %}">Edit</a>
         </div>
-	</div>
+        <div class="menu-item">
+          <a href="{% url 'assignments:roster' assignment.slug %}">Roster</a>
+        </div>
+      {% endif %}
+      {% if user.profile.is_student %}
+        <div class="menu-item">
+          <a href="{% url 'assignments:submissions' assignment.slug user.username %}">
+            Submissions
+          </a>
+        </div>
+      {% endif %}
+    {% endif %}
+  </div>
 </nav>
 

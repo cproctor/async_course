@@ -42,3 +42,22 @@ form.async-form textarea#id_markdown, form.async-form textarea#id_bibtex {
   margin: 8px;
   right: 12px;
 }
+.submissions-reviews {
+  display: flex;
+  flex-direction: column;
+}
+.submission {
+  border: 1px solid black;
+  margin: 8px 0;
+  padding: 4px;
+  width: 60%;
+  align-self: flex-start;
+}
+.review {
+  border: 1px solid black;
+  margin: 8px 0;
+  padding: 4px;
+  width: 60%;
+  align-self: flex-end;
+
+}

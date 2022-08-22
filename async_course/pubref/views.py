@@ -21,6 +21,7 @@ class AddPublications(LoginRequiredMixin, FormView):
         form = AddPublicationsForm(self.request.POST)
         if form.is_valid():
             Publication.import_bibliography(form.cleaned_data["bibtex"], self.request.user)
+            Publication.export_bibliography()
             return redirect('pubref:list')
         else:
             context = self.get_context_data()
@@ -44,12 +45,13 @@ class EditPublication(AuthorOrTeacherRequiredMixin, UpdateView):
     def post(self, *args, **kwargs):
         self.object = self.get_object()
         pub = get_object_or_404(Publication, slug=self.kwargs["slug"])
-        form = EditPublicationForm(self.request.POST)
+        form = EditPublicationForm(self.request.POST, instance=pub)
         if form.is_valid():
-            pub.bibtex = form.cleaned_data['bibtex']
             pub.apa_html = pub.get_apa('html')
             pub.apa_text = pub.get_apa('text')
             pub.save()
+            Publication.export_bibliography()
+            pub.recompile_citing_documents()
             return redirect('pubref:detail', slug=pub.slug)
         else:
             context = self.get_context_data()
@@ -60,5 +62,3 @@ class DeletePublication(AuthorOrTeacherRequiredMixin, DeleteView):
     model = Publication
     author_attribute_name = "contributor"
     success_url = reverse_lazy('pubref:list')
-
-

@@ -7,7 +7,5 @@
 {% endblock %}
 
 {% block submenu %}
-  {% if user.is_superuser %}
-    {% include "assignments/partials/submenu.html" %}
-  {% endif %}
+  {% include "assignments/partials/submenu.html" %}
 {% endblock %}
