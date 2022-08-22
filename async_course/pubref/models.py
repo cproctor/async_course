@@ -12,6 +12,7 @@ from .pandoc import (
 from .formatting import format_bibtex
 from pybtex.database import parse_string
 from pybtex.style.template import FieldIsMissing
+from pybtex.scanner import TokenRequired
 
 class Publication(models.Model):
     slug = models.CharField(max_length=40, db_index=True, unique=True)
@@ -32,12 +33,24 @@ class Publication(models.Model):
     def import_bibliography(cls, bib_string, contributor):
         """Reads in a bibliography and returns results.
         """
-        bib = parse_string(bib_string, 'bibtex')
+        try:
+            bib = parse_string(bib_string, 'bibtex')
+        except Exception as e:
+            return [{
+                "pub": None,
+                "result": "error",
+                "message": e
+                }]
+
         results = []
         for slug, entry in bib.entries.items():
             try:
                 pub = Publication.objects.get(slug=slug)
-                results.append({"pub": pub, "result": "exists"})
+                results.append({
+                    "pub": pub, 
+                    "result": "exists", 
+                    "message": f"{pub.slug} is already in the library"
+                })
             except Publication.DoesNotExist:
                 pub = Publication(slug=slug, bibtex=entry.to_string('bibtex'), 
                         contributor=contributor)
@@ -45,9 +58,13 @@ class Publication(models.Model):
                     pub.apa_html = pub.get_apa()
                     pub.apa_text = pub.get_apa('text')
                     pub.save()
-                    results.append({"pub": pub, "result": "created"})
-                except FieldIsMissing as e:
-                    results.append({"pub": pub, "result": f"error: {e}"})
+                    results.append({"pub": pub, "result": "created", "message": "OK"})
+                except (FieldIsMissing, TokenRequired) as e:
+                    results.append({
+                        "pub": pub, 
+                        "result": "error", 
+                        "message": e
+                        })
         return results
 
     def validated_bibtex(self):
