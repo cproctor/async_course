@@ -1,22 +1,9 @@
-{% extends "base.html" %}
+{% extends "pages/base.html" %}
 
 {% block menu %}
   {% with menu_section="pages" %}
     {% include "menu.html" %}
   {% endwith %}
-{% endblock %}
-
-{% block submenu %}
-  {% if user.is_superuser %}
-    <nav id="submenu">
-	    <div class="menu-left">
-            <div class="menu-item">
-                <a href="{% url 'pages:new' %}">New page</a>
-            </div>
-        </div>
-    </nav>
-
-  {% endif %}
 {% endblock %}
 
 {% block content %}

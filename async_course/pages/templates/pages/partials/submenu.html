@@ -1,6 +1,13 @@
+{% if user.is_superuser %}
 <nav id="submenu">
 	<div class="menu-left">
-        <div class="menu-item"><a href="{% url 'pages:edit' page.slug%}">Edit</a></div>
+        <div class="menu-item">
+            <a href="{% url 'pages:new' %}">New page</a>
+        </div>
+        {% if page %}
+          <div class="menu-item"><a href="{% url 'pages:edit' page.slug%}">Edit</a></div>
+        {% endif %}
 	</div>
 </nav>
+{% endif %}
 
