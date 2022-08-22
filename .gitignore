@@ -3,3 +3,4 @@
 *.swp
 *.swo
 async_course/db.sqlite3
+async_course/*.bib
