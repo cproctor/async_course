@@ -1,22 +1,24 @@
 {% extends "pubref/base.html" %}
 
 {% block content %}
-<h1>{{publication.slug}}</h2>
-{% if request.user == publication.contributor or request.user.is_superuser %}
-  [ <a href="{% url 'pubref:edit' publication.slug %}">Edit</a> 
-  | <a href="{% url 'pubref:delete' publication.slug %}">Delete</a>
-  ]
-{% endif %}
-<p class="pub">{{publication.apa_html|safe}}</p>
-<pre>{{publication.bibtex}}</pre>
-{% if posts %}
-<h2>Cited in</h2>
-<ol>
-    {% for post in posts %}
-      {% include "posts/partials/post_li.html" %}
-    {% endfor %}
-</ol>
-{% endif %}
+<div class="prose">
+  <h1>{{publication.slug}}</h2>
+  {% if request.user == publication.contributor or request.user.is_superuser %}
+    [ <a href="{% url 'pubref:edit' publication.slug %}">Edit</a> 
+    | <a href="{% url 'pubref:delete' publication.slug %}">Delete</a>
+    ]
+  {% endif %}
+  <p class="pub">{{publication.apa_html|safe}}</p>
+  <pre>{{publication.bibtex}}</pre>
+  {% if posts %}
+  <h2>Cited in</h2>
+  <ol>
+      {% for post in posts %}
+        {% include "posts/partials/post_li.html" %}
+      {% endfor %}
+  </ol>
+  {% endif %}
+</div>
 {% endblock %}
 
 

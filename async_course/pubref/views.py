@@ -89,6 +89,7 @@ class EditPublication(AuthorOrTeacherRequiredMixin, UpdateView):
         if form.is_valid():
             pub.apa_html = pub.get_apa('html')
             pub.apa_text = pub.get_apa('text')
+            pub.slug = pub.get_slug_from_bibtex()
             pub.save()
             Publication.export_bibliography()
             pub.recompile_citing_documents()

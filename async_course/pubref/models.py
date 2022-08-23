@@ -11,8 +11,7 @@ from .pandoc import (
 )
 from .formatting import format_bibtex
 from pybtex.database import parse_string
-from pybtex.style.template import FieldIsMissing
-from pybtex.scanner import TokenRequired
+from pybtex.exceptions import PybtexError
 
 class Publication(models.Model):
     slug = models.CharField(max_length=40, db_index=True, unique=True)
@@ -59,7 +58,7 @@ class Publication(models.Model):
                     pub.apa_text = pub.get_apa('text')
                     pub.save()
                     results.append({"pub": pub, "result": "created", "message": "OK"})
-                except (FieldIsMissing, TokenRequired) as e:
+                except PybtexError as e:
                     results.append({
                         "pub": pub, 
                         "result": "error", 
@@ -67,10 +66,23 @@ class Publication(models.Model):
                         })
         return results
 
+    class InvalidBibtex(Exception):
+        pass
+
     def validated_bibtex(self):
         """Returns a bibtex string which has passed through pybtex
         """
         return parse_string(self.bibtex, 'bibtex').to_string('bibtex')
+
+    def get_slug_from_bibtex(self):
+        """Extract the publication key from the bibtex
+        """
+        bib = parse_string(self.bibtex, 'bibtex')
+        bibentries = list(bib.entries.items())
+        if len(bibentries) != 1:
+            raise Publication.InvalidBibtex("The bibtex must contain a single entry.")
+        slug, entry = bibentries[0]
+        return slug
 
     def recompile_citing_documents(self):
         """Recompile markdown for all citing documents. 

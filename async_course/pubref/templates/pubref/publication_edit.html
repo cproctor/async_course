@@ -1,9 +1,15 @@
 {% extends "pubref/base.html" %}
 
 {% block content %}
-<h1>Edit {{publication.slug}}</h1>
-[{{publication.slug}}] {{publication.apa_html|safe}}
-<form action="{% url 'pubref:edit' publication.slug %}" method="POST" class="async-form grow-1">
+<div class="prose">
+  <h1>Edit {{publication.slug}}</h1>
+  {{publication.apa_html|safe}}
+</div>
+<form 
+    action="{% url 'pubref:edit' publication.slug %}" 
+    method="POST" 
+    class="async-form {% if form.errors %}grow-2{% else %}grow-1{% endif %}"
+>
     {{ form.as_p }}
     {% csrf_token %}
     <p>
