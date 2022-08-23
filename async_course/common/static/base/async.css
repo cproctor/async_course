@@ -3,6 +3,10 @@
 #main-content {
   margin: 0 10px;
 }
+.prose {
+  margin: 0 auto;
+  max-width: 800px;
+}
 form.async-form {
     flex-grow: 1;
     display: flex;
@@ -24,7 +28,7 @@ form.async-form {
 form.async-form p {
     display: flex;
 }
-form.async-form p :nth-child(2) {
+form.async-form p :last-child {
     flex-grow: 1;
 }
 
