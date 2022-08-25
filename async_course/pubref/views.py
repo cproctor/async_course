@@ -1,3 +1,5 @@
+from pathlib import Path
+from django.views.generic.base import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, FormView, DeleteView
@@ -5,6 +7,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponse, Http404
+from django.conf import settings
 from profiles.mixins import AuthorOrTeacherRequiredMixin
 from pubref.models import Publication
 from pubref.forms import AddPublicationsForm, EditPublicationForm
@@ -75,6 +79,18 @@ class ShowPublication(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['posts'] = self.get_object().post_set.all()
         return context
+
+class PublicationListBibtex(LoginRequiredMixin, View):
+
+    def get(self, *args, **kwargs):
+        bibfile = Path(settings.BIBLIOGRAHY)
+        if bibfile.exists():
+            return HttpResponse(bibfile.read_text(), headers={
+                'Content-Type': "application/x-bibtex",
+                'Content-Disposition': f'attachment; filename="lai_619.bib"',
+            })
+        else:
+            raise Http404("No publications have been added yet")
 
 class EditPublication(AuthorOrTeacherRequiredMixin, UpdateView):
     model = Publication

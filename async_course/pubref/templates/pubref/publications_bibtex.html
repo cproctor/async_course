@@ -2,11 +2,8 @@
 
 {% block content %}
 <div class="prose">
-  <h1>References</h1>
-  <p>
-    [<a href="{% url 'pubref:add' %}">Add publications</a>
-    | <a href="{% url 'pubref:bibtex' %}">Download bibtex</a>]
-  </p>
+  <h1>References (bibtex)</h1>
+  <p><a href="{% url 'pubref:add' %}">Add publications</a></p>
   <ul class="bibliography">
   {% for publication in publications %}
     {% include "pubref/partials/publication_li.html" %}
@@ -14,4 +11,5 @@
   </ul>
 </div>
 {% endblock %}
+
 
