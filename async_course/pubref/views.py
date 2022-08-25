@@ -57,9 +57,9 @@ class AddPublications(LoginRequiredMixin, FormView):
             else:
                 msg = "No publications were added."
             if duplicates:
-                msg += f"{len(d)} {was(d)} already in the bibliography."
+                msg += f" {len(d)} {was(d)} already in the bibliography."
             if errors:
-                msg += "The following import errors occured:<ul>"
+                msg += " The following import errors occured:<ul>"
                 for err in errors:
                     msg += f"<li>{err['message']}</li>"
                 msg += "</ul>"
