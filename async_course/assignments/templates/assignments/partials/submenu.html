@@ -13,9 +13,11 @@
         <div class="menu-item">
           <a href="{% url 'assignments:edit' assignment.slug %}">Edit</a>
         </div>
-        <div class="menu-item">
-          <a href="{% url 'assignments:roster' assignment.slug %}">Roster</a>
-        </div>
+        {% if assignment.has_submissions %}
+          <div class="menu-item">
+            <a href="{% url 'assignments:roster' assignment.slug %}">Roster</a>
+          </div>
+        {% endif %}
       {% endif %}
       {% if user.profile.is_student %}
         <div class="menu-item">

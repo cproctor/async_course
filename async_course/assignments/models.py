@@ -12,6 +12,7 @@ class Assignment(PandocMarkdownModel):
     title = models.CharField(max_length=200)
     slug = models.CharField(max_length=40, unique=True)
     active = models.BooleanField(default=False)
+    has_submissions = models.BooleanField(default=True)
     peer_review = models.BooleanField(default=False)
 
     assignment_statuses = ['NOT_STARTED', 'STARTED', 'COMPLETE']
