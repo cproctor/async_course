@@ -1,13 +1,9 @@
 {% load post_tags %}
 
-<article class="post">
-    <h1>
-        {% if nested %} 
-            <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
-        {% else %}
-            {{post.title}}
-        {% endif %}
-    </h1>
+<article class="post{% if nested %} nested{% endif %}">
+    {% if not nested %} 
+      <h1>{{post.title}}</h1>
+    {% endif %}
     <div class="post-details">
       {% include "posts/partials/upvote.html" %}
       {{post.score}} point{{post.score|pluralize}} 

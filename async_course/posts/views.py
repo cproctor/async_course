@@ -134,8 +134,11 @@ class ShowPost(DetailView):
 
     def get(self, *args, **kwargs):
         result = super().get(*args, **kwargs)
+        post_ids = [p.id for p in self.get_object().tree()]
         n = self.request.user.notifications.filter(
-                event__action=Event.EventActions.CREATED_POST)
+            event__action=Event.EventActions.CREATED_POST,
+            event__object_id__in=post_ids,
+        )
         n.update(read=True)
         return result
 

@@ -46,9 +46,12 @@ form.async-form label {
 }
 .post .children {
   margin-left: 10px;
+  border-left: 2px solid grey;
+  padding-left: 4px;
 }
 .post.new {
   border-left: 4px solid #e74c3c;
+  padding-left: 2px;
 }
 .pub-reference, .csl-entry {
   margin-left: 20px;
