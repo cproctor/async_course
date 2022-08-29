@@ -9,6 +9,8 @@ from .forms import ProfileForm
 from posts.models import Post
 from profiles.mixins import AuthorOrTeacherRequiredMixin
 from lai_619.grades import LAI619Grader
+from django.contrib.auth.views import PasswordChangeView
+from django.contrib import messages
 
 class ShowProfile(DetailView):
     model = Profile
@@ -89,3 +91,20 @@ class EditProfile(AuthorOrTeacherRequiredMixin, UpdateView):
                 'url': reverse_lazy('profiles:edit', self.request.user.username)
             }
             return render(self.request, self.template_name, context)
+
+class ChangePassword(PasswordChangeView):
+    template_name = "profiles/password_form.html"
+    success_url = '/'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile = get_object_or_404(Profile, user__username=self.kwargs['username'])
+        context['profile'] = profile
+        return context
+
+    def post(self, *args, **kwargs):
+        result = super().post(*args, **kwargs)
+        if result.status_code == 302:
+            messages.info(self.request, "You changed your password.")
+        return result
+

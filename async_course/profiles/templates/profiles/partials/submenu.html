@@ -1,6 +1,7 @@
 <nav id="submenu">
 	<div class="menu-left">
         <div class="menu-item"><a href="{% url 'profiles:edit' profile.user.username %}">Edit profile</a></div>
+        <div class="menu-item"><a href="{% url 'profiles:password' profile.user.username %}">Change password</a></div>
         <div class="menu-item"><a href="{% url 'profiles:grades' profile.user.username %}">Grades</a></div>
 	</div>
 </nav>
