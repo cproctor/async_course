@@ -1,6 +1,6 @@
 <li class="pub-reference">
     {{publication.apa_html|safe}}
-    [<a href="{% url 'pubref:detail' publication.slug %}">{{publication.slug}}</a>
+    <br>[<a href="{% url 'pubref:detail' publication.slug %}">{{publication.slug}}</a>
     {% if request.user == publication.contributor or request.user.is_superuser %}
     | <a href="{% url 'pubref:edit' publication.slug %}">Edit</a> 
     | <a href="{% url 'pubref:delete' publication.slug %}">Delete</a>
