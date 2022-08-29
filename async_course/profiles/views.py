@@ -61,7 +61,6 @@ class EditProfile(AuthorOrTeacherRequiredMixin, UpdateView):
         form = ProfileForm({
             'first_name': profile.user.first_name,
             'last_name': profile.user.last_name,
-            'username': profile.user.username,
             'email_frequency': profile.email_frequency,
             'markdown': profile.markdown,
         }, profile.user)
@@ -82,7 +81,6 @@ class EditProfile(AuthorOrTeacherRequiredMixin, UpdateView):
             profile.save()
             profile.user.first_name = form.cleaned_data['first_name']
             profile.user.last_name = form.cleaned_data['last_name']
-            profile.user.username = form.cleaned_data['username']
             profile.user.save()
             return redirect('profiles:detail', username=profile.user.username)
         else:
