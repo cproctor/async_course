@@ -5,7 +5,7 @@
 }
 .prose {
   margin: 0 auto;
-  max-width: 800px;
+  width: 800px;
 }
 form.async-form {
     flex-grow: 1;
