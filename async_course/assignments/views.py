@@ -76,7 +76,7 @@ class ShowAssignment(LoginRequiredMixin, DetailView):
     model = Assignment
 
 class ShowAssignmentRoster(DetailView):
-    model = Assignment
+    queryset = Assignment.objects.filter(has_submissions=True)
     template_name = "assignments/assignment_roster.html"
 
     def get_context_data(self, **kwargs):

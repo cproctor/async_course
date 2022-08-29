@@ -11,7 +11,11 @@
         </a>
         <a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
       {% else %}
-        <a href="{% url 'assignments:roster' assn.slug %}">{{assn.title}}</a></li>
+        {% if assn.has_submissions %}
+          <a href="{% url 'assignments:roster' assn.slug %}">{{assn.title}}</a></li>
+        {% else %}
+          <a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
+        {% endif %}
       {% endif %}
     {% endfor %}
 {% for post in posts %}
