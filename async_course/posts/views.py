@@ -9,7 +9,7 @@ from posts.forms import PostForm, PostReplyForm
 from profiles.mixins import AuthorOrTeacherRequiredMixin
 from events.models import Event, Notification
 
-class PostList(ListView):
+class PostList(LoginRequiredMixin, ListView):
     queryset = Post.objects.filter(parent=None)
     context_object_name = "posts"
 

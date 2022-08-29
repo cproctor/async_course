@@ -11,8 +11,9 @@ from profiles.mixins import AuthorOrTeacherRequiredMixin
 from lai_619.grades import LAI619Grader
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class ShowProfile(DetailView):
+class ShowProfile(LoginRequiredMixin, DetailView):
     model = Profile
 
     def get_object(self, queryset=None):
@@ -29,7 +30,7 @@ class ShowProfile(DetailView):
         context['posts'] = Post.objects.filter(author=self.get_user()).all()
         return context
 
-class ShowGrades(DetailView):
+class ShowGrades(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = "profiles/profile_grades.html"
 
