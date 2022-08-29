@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import PermissionDenied
 from profiles.mixins import TeacherRequiredMixin
-from assignments.models import Assignment, Submission
+from assignments.models import Assignment, Submission, AssignmentExample
 from assignments.forms import AssignmentForm, SubmissionForm
 from assignments.mixins import AssignmentSubmissionsMixin
 import magic
@@ -133,5 +133,24 @@ class DownloadSubmission(LoginRequiredMixin, View):
             })
         else:
             raise PermissionDenied()
+
+class DownloadExample(LoginRequiredMixin, View):
+
+    def get_object(self):
+        return get_object_or_404(AssignmentExample, 
+                assignment__slug=self.kwargs['slug'], pk=self.kwargs['pk'])
+
+    def get(self, *args, **kwargs):
+        f = self.get_object()
+        filename = Path(f.upload.file.name).name
+        return HttpResponse(f.upload.file.read(), headers={
+            'Content-Type': f.mime,
+            'Content-Disposition': f'attachment; filename="{filename}"',
+        })
+
+
+
+
+
 
 

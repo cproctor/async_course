@@ -3,6 +3,18 @@
 {% block content %}
 <div class="prose">
   <h1>{{assignment.title}}</h1>
+  {% if assignment.examples.exists %}
+  <h2>Examples</h2>
   {{assignment.html|safe}}
+  <ul>
+      {% for ex in assignment.examples.all %}
+        <li>
+          <a href="{% url 'assignments:download_example' assignment.slug ex.id %}">
+            {{ex.description|default:"Example"}}
+          </a>
+        </li>
+      {% endfor %}
+  </ul>
+  {% endif %}
 </div>
 {% endblock %}

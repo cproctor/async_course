@@ -33,6 +33,16 @@ class Assignment(PandocMarkdownModel):
     class Meta:
         ordering = ['due_date']
 
+class AssignmentExample(models.Model):
+    description = models.TextField(null=True, blank=True)
+    assignment = models.ForeignKey(Assignment, related_name="examples",
+            on_delete=models.CASCADE)
+    upload = models.FileField(upload_to="examples/")
+    mime = models.CharField(max_length=100, default="application/pdf")
+
+    class Meta:
+        ordering = ['description']
+
 def upload_filename(instance, original_filename):
     """Defines the filename where the file will be saved, like proctor_
     """

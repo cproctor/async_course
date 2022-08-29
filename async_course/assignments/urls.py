@@ -11,6 +11,8 @@ urlpatterns = [
     path('<str:slug>/roster', views.ShowAssignmentRoster.as_view(), name="roster"),
     path('<str:slug>/<str:username>', views.ShowAssignmentSubmissions.as_view(), 
             name="submissions"),
+    path('<str:slug>/examples/<int:pk>', views.DownloadExample.as_view(), 
+            name="download_example"),
     path('<str:slug>/<str:username>/v<int:version>/reviews', 
             review_views.NewReview.as_view(), name="new_review"),
     path('<str:slug>/<str:username>/v<int:version>/reviews/<int:review_id>', 
@@ -19,4 +21,3 @@ urlpatterns = [
             name="download_submission"),
     path('<str:slug>', views.ShowAssignment.as_view(), name="detail"),
 ]
-
