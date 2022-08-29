@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 from posts.models import Post
 from posts.forms import PostForm, PostReplyForm
 from profiles.mixins import AuthorOrTeacherRequiredMixin
+from events.models import Event, Notification
 
 class PostList(ListView):
     queryset = Post.objects.filter(parent=None)
@@ -31,6 +32,11 @@ class NewPost(LoginRequiredMixin, CreateView):
             obj.save()
             obj.update_priority()
             obj.save()
+            evt = Event(user=obj.author, action=Event.EventActions.CREATED_POST, 
+                    object_id=obj.id)
+            evt.save()
+            for user in obj.interested_people():
+                evt.notifications.create(user=user)
             return redirect("posts:detail", pk=obj.id)
         else:
             context = self.get_context_data()

@@ -1,10 +1,19 @@
 from django.shortcuts import render, redirect
 from django.views.generic.edit import CreateView, UpdateView, FormView, DeleteView
+from django.views.generic.list import ListView
 from django.urls import reverse_lazy
 from profiles.mixins import AuthorOrTeacherRequiredMixin
 from assignments.mixins import AssignmentSubmissionVersionMixin
 from reviews.forms import ReviewForm, AuthoritativeReviewForm
-from reviews.models import Review
+from reviews.models import Review, ReviewerRole
+from django.contrib.auth.mixins import LoginRequiredMixin
+from events.models import Event
+
+class ListReviews(LoginRequiredMixin, ListView):
+    context_object_name = "roles"
+
+    def get_queryset(self):
+        return ReviewerRole.objects.filter(reviewer=self.request.user)
 
 class NewReview(AssignmentSubmissionVersionMixin, FormView):
     def post(self, *args, **kwargs):
@@ -17,6 +26,10 @@ class NewReview(AssignmentSubmissionVersionMixin, FormView):
                 review.accepted=False
             review.compile_markdown()
             review.save()
+            evt = Event(user=self.author, action=Event.EventActions.ADDED_REVIEW, 
+                    object_id=review.id)
+            for user in review.interested_people():
+                evt.notifications.create(user=user)
             return redirect('assignments:submissions', slug=self.assignment.slug,
                     username=self.author.username)
         else:

@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'async_course',
     'common',
+    'events',
     'pubref',
     'profiles',
     'assignments',

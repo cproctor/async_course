@@ -33,10 +33,30 @@ class Post(PandocMarkdownModel):
         return self.count_tree() + self.upvotes.count() 
 
     def count_tree(self):
-        return 1 + sum(child.count_tree() for child in self.child_posts.all())
+        return len(self.tree())
 
     def editable(self):
         return self.age_in_hours() < settings.POST_UPVOTE_HOUR_LIMIT
+
+    def is_root(self):
+        return self.parent is None
+
+    def root_post(self):
+        return self if self.is_root() else self.parent
+
+    # TODO inefficient; should be memoized
+    # TODO: acyclic structure not enforced
+    def tree(self):
+        return [self] + [child.tree() for child in self.child_posts.all()]
+
+    def interested_people(self):
+        if self.is_root() and self.author.profile.is_teacher:
+            return User.objects.all()
+        else:
+            return set(
+                User.objects.filter(profile__is_teacher=True).all() + 
+                [post.author for post in self.tree()]
+            )
 
     class Meta:
         ordering = ["-priority",]

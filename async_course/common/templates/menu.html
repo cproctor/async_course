@@ -14,6 +14,9 @@
 	    <div class="menu-item clickable{% if menu_section == 'assignments' %} current{% endif %}">
           <a href="{% url 'assignments:list' %}">Assignments</a>
         </div>
+	    <div class="menu-item clickable{% if menu_section == 'reviews' %} current{% endif %}">
+          <a href="{% url 'reviews:list' %}">Reviews</a>
+        </div>
 	    <div class="menu-item clickable{% if menu_section == 'publications' %} current{% endif %}">
           <a href="{% url 'pubref:list' %}">References</a>
         </div>

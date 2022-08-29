@@ -1,0 +1,15 @@
+{% extends "reviews/base.html" %}
+
+{% block content %}
+<h1>Reviews assigned to you</h1>
+<ul>
+    {% for rr in roles %}
+    <li>
+      {{rr.get_status}}
+      <a href="{% url 'assignments:submissions' rr.assignment.slug rr.reviewed.username %}">
+          {{rr.assignment.title}}: {{rr.reviewed.first_name}} {{rr.reviewed.last_name}}
+      </a>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}

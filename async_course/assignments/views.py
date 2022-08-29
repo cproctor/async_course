@@ -14,6 +14,7 @@ from assignments.forms import AssignmentForm, SubmissionForm
 from assignments.mixins import AssignmentSubmissionsMixin
 import magic
 from pathlib import Path
+from events.models import Event
 
 class ListAssignments(LoginRequiredMixin, ListView):
     queryset = Assignment.objects.filter(active=True)
@@ -106,6 +107,10 @@ class ShowAssignmentSubmissions(AssignmentSubmissionsMixin, FormMixin, ListView)
             sub.version = Submission.get_next_version(self.author, self.assignment)
             sub.mime = magic.from_file(sub.upload.file, mime=True)
             sub.save()
+            evt = Event(user=self.author, action=Event.EventActions.ADDED_SUBMISSION, 
+                    object_id=sub.id)
+            for user in sub.interested_people():
+                evt.notifications.create(user=user)
             return redirect("assignments:submissions", slug=self.assignment.slug, 
                     username=self.author.username)
         else:

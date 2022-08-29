@@ -6,6 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
+from django.db.models import Q
 
 class Assignment(PandocMarkdownModel):
     due_date = models.DateTimeField(null=True, blank=True)
@@ -80,6 +81,12 @@ class Submission(models.Model):
             validators=[check_file_extension, check_file_size])
     mime = models.CharField(max_length=200, validators=[check_mime_type])
     shared = models.BooleanField(default=False)
+
+    def interested_people(self):
+        return User.objects.filter(
+            Q(reviewer_roles__assignment=self.assignment) | 
+            Q(reviewed_roles__assignment=self.assignment)
+        ).all()
 
     @classmethod
     def get_next_version(cls, author, assignment):
