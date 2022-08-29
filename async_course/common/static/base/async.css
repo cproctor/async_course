@@ -47,6 +47,9 @@ form.async-form label {
 .post .children {
   margin-left: 10px;
 }
+.post.new {
+  border-left: 4px solid #e74c3c;
+}
 .pub-reference, .csl-entry {
   margin-left: 20px;
   text-indent: -20px;
@@ -84,4 +87,10 @@ pre {
   background-color: #ddd;
   padding: 4px;
   overflow: scroll;
+}
+.badge {
+  background-color: #e74c3c;
+  color: white;
+  padding: 3px;
+  border-radius: 4px;
 }

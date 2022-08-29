@@ -23,5 +23,6 @@ class SubmissionForm(forms.ModelForm):
 
     def clean_upload(self):
         upload = self.cleaned_data['upload']
-        mimetype = magic.from_file(upload.file, mime=True)
+        mimetype = magic.from_buffer(upload.file.read(2048), mime=True)
         check_mime_type(mimetype)
+        return upload

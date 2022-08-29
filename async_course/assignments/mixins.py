@@ -12,9 +12,19 @@ class AssignmentSubmissionsMixin:
     """
 
     def dispatch(self, request, *args, **kwargs):
+        self.look_up_context_objects()
+        return super().dispatch(request, *args, **kwargs)
+
+    def look_up_context_objects(self):
         try:
-            self.look_up_context_objects()
-            return super().dispatch(request, *args, **kwargs)
+            self.assignment = Assignment.objects.get(slug=self.kwargs['slug'])
+            students = User.objects.filter(profile__is_student=True)
+            self.author = students.get(username=self.kwargs['username'])
+            self.reviewer_role = ReviewerRole.objects.get(
+                reviewer=self.request.user,
+                reviewed=self.author,
+                assignment=self.assignment,
+            )
         except (
             Assignment.DoesNotExist, 
             User.DoesNotExist, 
@@ -22,16 +32,6 @@ class AssignmentSubmissionsMixin:
             ReviewerRole.DoesNotExist,
         ):
             raise Http404()
-
-    def look_up_context_objects(self):
-        self.assignment = Assignment.objects.get(slug=self.kwargs['slug'])
-        students = User.objects.filter(profile__is_student=True)
-        self.author = students.get(username=self.kwargs['username'])
-        self.reviewer_role = ReviewerRole.objects.get(
-            reviewer=self.request.user,
-            reviewed=self.author,
-            assignment=self.assignment,
-        )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

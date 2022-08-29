@@ -1,6 +1,6 @@
 {% load post_tags %}
 
-<li class="post{% if post.pinned %} pinned{% endif %}">
+<li class="post{% if post.pinned %} pinned{% endif %}{% if post.is_new %} new{% endif %}">
   <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
   <div class="post-details">
       {% include "posts/partials/upvote.html" with static=True %}

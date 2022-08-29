@@ -13,6 +13,17 @@ class PostList(ListView):
     queryset = Post.objects.filter(parent=None)
     context_object_name = "posts"
 
+    def get_context_data(self, **kwargs):
+        post_notifications = self.request.user.notifications.filter(
+                event__action=Event.EventActions.CREATED_POST, read=False).all()
+        unseen_post_ids = set([p.event.object_id for p in post_notifications])
+
+        context = super().get_context_data(**kwargs)
+        for post in context['posts']:
+            tree_ids = set([p.id for p in post.tree()])
+            post.is_new = bool(unseen_post_ids.intersection(tree_ids))
+        return context
+
 class NewPost(LoginRequiredMixin, CreateView):
     form_class = PostForm
     template_name = "posts/post_form.html"
@@ -120,4 +131,11 @@ class UpvotePost(LoginRequiredMixin, UpdateView):
 
 class ShowPost(DetailView):
     model = Post
+
+    def get(self, *args, **kwargs):
+        result = super().get(*args, **kwargs)
+        n = self.request.user.notifications.filter(
+                event__action=Event.EventActions.CREATED_POST)
+        n.update(read=True)
+        return result
 

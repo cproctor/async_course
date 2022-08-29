@@ -1,9 +1,18 @@
 {% load page_tags %}
+{% load post_tags %}
+{% load review_tags %}
 {% pages_in_menu as pages %}
+{% unseen_posts_count request.user as p_action %}
+{% reviews_needing_action_count request.user as r_action %}
 <nav id="menu">
 	<div class="menu-left">
 		<div class="menu-item clickable{% if menu_section == 'public' %} current{% endif %}">
-      <a href="{% url 'common:home' %}">Home</a>
+      <a href="{% url 'common:home' %}">
+        Home
+        {% if p_action %}
+          <span class="badge">{{p_action}}</span>
+        {% endif %}
+      </a>
     </div>
     {% for page in pages %}
 	    <div class="menu-item clickable{% if menu_section == page.slug %} current{% endif %}">
@@ -15,7 +24,12 @@
           <a href="{% url 'assignments:list' %}">Assignments</a>
         </div>
 	    <div class="menu-item clickable{% if menu_section == 'reviews' %} current{% endif %}">
-          <a href="{% url 'reviews:list' %}">Reviews</a>
+          <a href="{% url 'reviews:list' %}">
+            Reviews
+            {% if r_action %}
+              <span class="badge">{{r_action}}</span>
+            {% endif %}
+          </a>
         </div>
 	    <div class="menu-item clickable{% if menu_section == 'publications' %} current{% endif %}">
           <a href="{% url 'pubref:list' %}">References</a>

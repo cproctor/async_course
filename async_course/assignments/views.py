@@ -91,9 +91,9 @@ class ShowAssignmentSubmissions(AssignmentSubmissionsMixin, FormMixin, ListView)
     form_class = SubmissionForm
 
     def dispatch(self, *args, **kwargs):
-        destination = super().dispatch(*args, **kwargs)
+        self.look_up_context_objects()
         self.object_list = self.get_queryset().all()
-        return destination
+        return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
         return Submission.objects.filter(assignment=self.assignment, author=self.author)
@@ -105,10 +105,11 @@ class ShowAssignmentSubmissions(AssignmentSubmissionsMixin, FormMixin, ListView)
             sub.assignment = self.assignment
             sub.author = self.author
             sub.version = Submission.get_next_version(self.author, self.assignment)
-            sub.mime = magic.from_file(sub.upload.file, mime=True)
+            sub.mime = magic.from_buffer(sub.upload.file.read(2048), mime=True)
             sub.save()
             evt = Event(user=self.author, action=Event.EventActions.ADDED_SUBMISSION, 
                     object_id=sub.id)
+            evt.save()
             for user in sub.interested_people():
                 evt.notifications.create(user=user)
             return redirect("assignments:submissions", slug=self.assignment.slug, 

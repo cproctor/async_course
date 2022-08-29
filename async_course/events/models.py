@@ -19,5 +19,6 @@ class Event(models.Model):
 class Notification(models.Model):
     event = models.ForeignKey(Event, related_name="notifications",
             on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name="notifications", 
+            on_delete=models.CASCADE)
     read = models.BooleanField(default=False)

@@ -28,6 +28,7 @@ class NewReview(AssignmentSubmissionVersionMixin, FormView):
             review.save()
             evt = Event(user=self.author, action=Event.EventActions.ADDED_REVIEW, 
                     object_id=review.id)
+            evt.save()
             for user in review.interested_people():
                 evt.notifications.create(user=user)
             return redirect('assignments:submissions', slug=self.assignment.slug,

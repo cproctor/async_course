@@ -47,7 +47,7 @@ class Post(PandocMarkdownModel):
     # TODO inefficient; should be memoized
     # TODO: acyclic structure not enforced
     def tree(self):
-        return [self] + [child.tree() for child in self.child_posts.all()]
+        return sum([child.tree() for child in self.child_posts.all()], [self])
 
     def interested_people(self):
         if self.is_root() and self.author.profile.is_teacher:

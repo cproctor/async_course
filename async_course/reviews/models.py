@@ -28,6 +28,8 @@ class ReviewerRole(models.Model):
         elif not subs.exists():
             return 'NOT_STARTED'
         else:
+            if not self.reviews.exists():
+                return 'WAITING_FOR_REVIEW'
             last_submission_date = subs.last().date_created
             last_review_date = self.reviews.last().date_created
             if last_submission_date > last_review_date:
