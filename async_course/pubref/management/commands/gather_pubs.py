@@ -1,6 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.conf import settings
-from posts.models import Post
 from zotapi import api
 import shutil
 from pathlib import Path
@@ -18,7 +17,10 @@ class Command(BaseCommand):
             citekey = api.get_citation_key(item['id'])
             attachments = api.get_attachments(item['id'])
             for i, att in enumerate(sorted(attachments)):
-                filename = citekey + (str(i) if i else '') + att.suffix
+                if len(attachments) > 1:
+                    filename = f"{citekey}_part{i+1}" + att.suffix
+                else:
+                    filename = citekey + att.suffix
                 shutil.copy(att, export / filename)
 
     def prepare_export_directory(self, options):

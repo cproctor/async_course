@@ -8,6 +8,15 @@
     | <a href="{% url 'pubref:delete' publication.slug %}">Delete</a>
     ]
   {% endif %}
+  <ul>
+  {% for f in publication.files.all %}
+  <li>
+    <a href="{% url 'pubref:download_file' publication.slug f.id %}">
+      Download {{f.description|default:''}}
+    </a>
+  </li>
+  {% endfor %}
+  </ul>
   <p class="pub">{{publication.apa_html|safe}}</p>
   <pre>{{publication.bibtex}}</pre>
   {% if posts %}

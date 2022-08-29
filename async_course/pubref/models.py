@@ -171,3 +171,13 @@ class PandocMarkdownModel(models.Model):
     class Meta:
         abstract = True
 
+class PublicationFile(models.Model):
+    description = models.TextField(null=True, blank=True)
+    publication = models.ForeignKey(Publication, related_name="files", 
+            on_delete=models.CASCADE)
+    upload = models.FileField(upload_to="publications/")
+    mime = models.CharField(max_length=100, default="application/pdf")
+
+    class Meta:
+        ordering = ['description']
+

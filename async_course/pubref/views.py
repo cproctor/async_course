@@ -10,7 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse, Http404
 from django.conf import settings
 from profiles.mixins import AuthorOrTeacherRequiredMixin
-from pubref.models import Publication
+from pubref.models import Publication, PublicationFile
 from pubref.forms import AddPublicationsForm, EditPublicationForm
 
 class PublicationList(LoginRequiredMixin, ListView):
@@ -119,3 +119,21 @@ class DeletePublication(AuthorOrTeacherRequiredMixin, DeleteView):
     model = Publication
     author_attribute_name = "contributor"
     success_url = reverse_lazy('pubref:list')
+
+class DownloadPublicationFile(LoginRequiredMixin, View):
+    def get_object(self):
+        return get_object_or_404(PublicationFile, 
+                publication__slug=self.kwargs['slug'], pk=self.kwargs['pk'])
+
+    def get(self, *args, **kwargs):
+        f = self.get_object()
+        filename = Path(f.upload.file.name).name
+        return HttpResponse(f.upload.file.read(), headers={
+            'Content-Type': f.mime,
+            'Content-Disposition': f'attachment; filename="{filename}"',
+        })
+
+
+
+
+

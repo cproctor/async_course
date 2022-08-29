@@ -10,5 +10,6 @@ urlpatterns = [
     path('<str:slug>/edit', views.EditPublication.as_view(), name="edit"),
     path('<str:slug>/delete', views.DeletePublication.as_view(), name="delete"),
     path('<str:slug>', views.ShowPublication.as_view(), name="detail"),
+    path('<str:slug>/<int:pk>', views.DownloadPublicationFile.as_view(), name="download_file"),
 ]
 
