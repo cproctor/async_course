@@ -3,7 +3,7 @@ from django.conf import settings
 import logging
 from datetime import datetime
 
-logger = logging.getLogger("cognitive_apprenticeship.email")
+logger = logging.getLogger("async_course.email")
 
 def send_journal_email(subject, body, recipients):
     """Sends an email and logs the result.
@@ -13,16 +13,16 @@ def send_journal_email(subject, body, recipients):
     msg = "Email to {}: {}".format(recipients, subject)
     logger.info(msg, extra={
         'recipients': recipients,
-        'sender': settings.JOURNAL_EMAIL_SENDER,
+        'sender': settings.EMAIL_SENDER,
         'subject': subject,
         'body': body,
         'timestamp': datetime.now(),
-        'sent': settings.SEND_JOURNAL_EMAIL,
+        'sent': settings.SEND_EMAIL,
     })
-    if settings.SEND_JOURNAL_EMAIL:
+    if settings.SEND_EMAIL:
         send_mail(
-            settings.JOURNAL_EMAIL_SUBJECT_PREFIX + subject,
+            settings.EMAIL_SUBJECT_PREFIX + subject,
             body, 
-            settings.JOURNAL_EMAIL_SENDER, 
+            settings.EMAIL_SENDER, 
             recipients,
         )

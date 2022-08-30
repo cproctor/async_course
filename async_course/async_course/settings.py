@@ -148,3 +148,8 @@ POST_UPVOTE_HOUR_LIMIT = 4
 ZOTERO_DATA_DIR = Path("/Users/chrisp/Zotero")
 ZOTERO_DB = "/Users/chrisp/Zotero/zotero.sqlite"
 ZOTERO_COLLECTION = "LAI 619"
+
+SEND_EMAIL = False
+EMAIL_SENDER = "chris.proctor@gmail.com"
+EMAIL_SUBJECT_PREFIX = "[LAI 619] "
+EMAIL_BASE_URL = "https://cisljournal.net"
