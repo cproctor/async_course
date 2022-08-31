@@ -13,38 +13,84 @@ motivating this:
 - A Hacker News-style threaded, weighted discussion forum.
 - 
 
-## Layout
+## Deployment
 
-/schedule
-Shows the week-by-week curriculum, including weekly descriptions, 
+### Prepare virtual machine
 
-/bibliography
-Shows a list of references
+Create a new VM running Ubuntu 22.04 (Digital Ocean Droplet) with SSH keys.
+Ensure that domains are using DO's nameservers (`ns{1,2,3}.digitalocean.com`)
+and that DO is routing domains to the droplet.
+SSH in as root.
 
-/bibliography/PUB
-Shows a publication along with 
+```
+apt update
+apt upgrade
+apt install certbot nginx gh python3.10-venv tree
+adduser chris
+usermod -aG sudo chris
+mv .ssh /home/chris/.ssh
+chown -R chris:chris /home/chris/.ssh
+sudo ufw allow OpenSSH
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+exit
+```
 
-/USER
-  - Shows a user's profile
+Create a personal access token in [github](https://github.com/settings/tokens).
+SSH in as chris and save the token in `~/github.txt`.
 
-/USER/
+```
+gh auth login --with-token < ~/github.txt
+gh auth setup-git
+export GITHUB_TOKEN="$(cat ~/github.txt)"
+sudo chown -R chris:chris /opt
+cd /opt
+mkdir -p lai615/logs lai615/static_root lai619/logs lai619/static_root
+cd lai615
+gh repo clone cproctor/cognitive-apprenticeship
+cd /opt
+cd lai619
+gh repo clone cproctor/async_course
+sudo chown -R www-data:www-data /opt
+```
 
-/USER/assignments
-Shows status of all assignments.
+Now, configure app settings. 
 
-/USER/assignments/
+```
+cd /opt/lai615/cognitive-apprenticeship/cognitive_apprenticeship/
+mv settings.py settings_production.py
+```
 
-/USER/BIBLIOGRAPHY
-- Shows a user's contributed references (editable)
+- Generate secret key
+  ```
+  from django.core.management.utils import get_random_secret_key  
+  get_random_secret_key()
+  ```
+- `STATIC_ROOT="/opt/lai615/static_root"`
+- Configure logging (`cognitive_apprenticeship/deploy/settings_logging.py`)
 
-## Progress notes
+Install dependencies
 
-I'm going to move away from the custom field implementation. Instead, I'm going to
-write a model mixin which:
+```
+python3 -m venv /opt/lai615/env
+source /opt/lai615/env/bin/activate
+cd /opt/lai615/cognitive-apprenticeship/
+pip install -r requirements.txt
+```
 
-- Adds a before-save signal to compile the markdown, populate the HTML field, 
-  and the error field if necessary.
-- Adds a backref to publications.
+### Services
+
+```
+cd /opt/lai615/cognitive-apprenticeship/cognitive_apprenticeship/deploy
+sudo cp gunicorn.socket gunicorn.service /etc/systemd/system/
+```
+
+- Create `.sock` and `.service` files (starting from `cognitive_apprenticeship/gunicorn615.*`)
+
+### Networking
+
+- Configure nginx (starting from `cognitive_apprenticeship/deploy/nginx.conf`)
 
 
-
+### Prepare apps
