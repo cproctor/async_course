@@ -91,6 +91,20 @@ python-versions = "*"
 Django = ">=2.0.1"
 
 [[package]]
+name = "gunicorn"
+version = "20.1.0"
+description = "WSGI HTTP Server for UNIX"
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[package.extras]
+eventlet = ["eventlet (>=0.24.1)"]
+gevent = ["gevent (>=1.4.0)"]
+setproctitle = ["setproctitle"]
+tornado = ["tornado (>=0.2)"]
+
+[[package]]
 name = "importlib-metadata"
 version = "4.12.0"
 description = "Read metadata from Python packages"
@@ -303,7 +317,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "77d6ac967bcc185b3f73bf49def6e65864401066c2806c2b29015a52119a616e"
+content-hash = "be2e38bb25fd4a39dce84bc195e68be4ed9d6e77d6d1f565e6b948e33478af3b"
 
 [metadata.files]
 arrow = []
@@ -314,6 +328,7 @@ colorama = []
 django = []
 django-markdown = []
 django-model-utils = []
+gunicorn = []
 importlib-metadata = []
 latexcodec = [
     {file = "latexcodec-2.0.1-py2.py3-none-any.whl", hash = "sha256:c277a193638dc7683c4c30f6684e3db728a06efb0dc9cf346db8bd0aa6c5d271"},
