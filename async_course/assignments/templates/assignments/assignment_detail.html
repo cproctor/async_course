@@ -3,9 +3,9 @@
 {% block content %}
 <div class="prose">
   <h1>{{assignment.title}}</h1>
+  {{assignment.html|safe}}
   {% if assignment.examples.exists %}
   <h2>Examples</h2>
-  {{assignment.html|safe}}
   <ul>
       {% for ex in assignment.examples.all %}
         <li>
