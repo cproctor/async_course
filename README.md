@@ -11,7 +11,6 @@ the Django backend. The administrative UI is not fully-developed.
 This package implements an asynchronous course. The main features 
 motivating this:
 - A Hacker News-style threaded, weighted discussion forum.
-- 
 
 ## Deployment
 
@@ -46,51 +45,54 @@ gh auth setup-git
 export GITHUB_TOKEN="$(cat ~/github.txt)"
 sudo chown -R chris:chris /opt
 cd /opt
-mkdir -p lai615/logs lai615/static_root lai619/logs lai619/static_root
-cd lai615
+mkdir -p lai619/logs lai619/static_root
+cd lai619
 gh repo clone cproctor/cognitive-apprenticeship
 cd /opt
-cd lai619
 gh repo clone cproctor/async_course
-sudo chown -R www-data:www-data /opt
 ```
 
-Now, configure app settings. 
-
-```
-cd /opt/lai615/cognitive-apprenticeship/cognitive_apprenticeship/
-mv settings.py settings_production.py
-```
+Configure app settings (`async_course/settings.py`)
 
 - Generate secret key
   ```
   from django.core.management.utils import get_random_secret_key  
   get_random_secret_key()
   ```
-- `STATIC_ROOT="/opt/lai615/static_root"`
+- `ALLOWED_HOSTS=['localhost']`
+- `STATIC_ROOT="/opt/lai619/static_root"`
 - Configure logging (`cognitive_apprenticeship/deploy/settings_logging.py`)
 
 Install dependencies
 
 ```
-python3 -m venv /opt/lai615/env
-source /opt/lai615/env/bin/activate
-cd /opt/lai615/cognitive-apprenticeship/
+python3 -m venv /opt/lai619/env
+source /opt/lai619/env/bin/activate
+cd /opt/lai619/cognitive-apprenticeship/
 pip install -r requirements.txt
+```
+
+Setup tasks
+
+```
+./manage.py collectstatic
+./manage.py migrate
 ```
 
 ### Services
 
 ```
-cd /opt/lai615/cognitive-apprenticeship/cognitive_apprenticeship/deploy
-sudo cp gunicorn.socket gunicorn.service /etc/systemd/system/
+cd /opt/lai619/cognitive-apprenticeship/cognitive_apprenticeship/deploy
+sudo cp gunicorn619.socket gunicorn619.service /etc/systemd/system/
+sudo chown -R www-data:www-data /opt/lai619
+sudo systemctl start gunicorn619
+sudo systemctl status gunicorn619
 ```
-
-- Create `.sock` and `.service` files (starting from `cognitive_apprenticeship/gunicorn615.*`)
 
 ### Networking
 
 - Configure nginx (starting from `cognitive_apprenticeship/deploy/nginx.conf`)
 
 
-### Prepare apps
+
+- Set debug to False

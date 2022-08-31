@@ -6,7 +6,7 @@ LOGGING = {
         "file": {
             "level": "INFO",
             "class": "logging.FileHandler",
-            "filename": "/opt/lai615/logs/django615.log",
+            "filename": "/opt/lai619/logs/django615.log",
             "formatter": "app",
         },
     },
