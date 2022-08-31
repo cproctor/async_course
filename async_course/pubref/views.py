@@ -54,7 +54,7 @@ class AddPublications(LoginRequiredMixin, FormView):
             if len(results) == 1:
                 msg = f"{results[0]['pub'].slug} was imported."
             else:
-                msg = f"All {len(r)} publications were imported."
+                msg = f"All {len(s)} publications were imported."
         else:
             if successes:
                 msg = f"{len(s)} {pub(s)} {was(s)} added."
