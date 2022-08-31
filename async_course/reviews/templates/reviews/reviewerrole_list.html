@@ -3,6 +3,7 @@
 {% block content %}
 <h1>Reviews assigned to you</h1>
 <ul>
+    {% for rr in roles %}
     <li>
       {{rr.get_status}}
       <a href="{% url 'assignments:submissions' rr.assignment.slug rr.reviewed.username %}">
