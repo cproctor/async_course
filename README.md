@@ -24,7 +24,7 @@ SSH in as root.
 ```
 apt update
 apt upgrade
-apt install certbot nginx gh python3.10-venv tree
+apt install certbot nginx gh python3.10-venv pandoc tree
 adduser chris
 usermod -aG sudo chris
 mv .ssh /home/chris/.ssh
