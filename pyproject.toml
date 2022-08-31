@@ -14,6 +14,7 @@ arrow = "^1.2.2"
 pybtex-apa7-style = "^0.1.0"
 python-magic = "^0.4.27"
 gunicorn = "^20.1.0"
+JSON-log-formatter = "^0.5.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
