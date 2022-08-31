@@ -61,6 +61,14 @@ Configure app settings (`async_course/settings.py`)
   ```
 - `ALLOWED_HOSTS=['localhost', 'lai619.chrisproctor.net']`
 - `STATIC_ROOT="/opt/lai619/static_root"`
+- Email:
+  ```
+  EMAIL_HOST = "smtp.fastmail.com"
+  EMAIL_PORT = 465
+  EMAIL_USE_SSL = True
+  EMAIL_HOST_USER = "chris@chrisproctor.net"
+  EMAIL_HOST_PASSWORD = "..."
+  ```
 - Configure logging (`cognitive_apprenticeship/deploy/settings_logging.py`)
 
 Install dependencies
