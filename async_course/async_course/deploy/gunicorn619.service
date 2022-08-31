@@ -10,7 +10,7 @@ Type=notify
 User=www-data
 Group=www-data
 RuntimeDirectory=gunicorn
-WorkingDirectory=/opt/lai619/async_course
+WorkingDirectory=/opt/lai619/async_course/async_course
 ExecStart=/opt/lai619/env/bin/gunicorn \
   --bind unix:/opt/lai619/gunicorn619.sock \
   --access-logfile /opt/lai619/logs/gunicorn619-access.log \

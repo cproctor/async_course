@@ -59,7 +59,7 @@ Configure app settings (`async_course/settings.py`)
   from django.core.management.utils import get_random_secret_key  
   get_random_secret_key()
   ```
-- `ALLOWED_HOSTS=['localhost']`
+- `ALLOWED_HOSTS=['localhost', 'lai619.chrisproctor.net']`
 - `STATIC_ROOT="/opt/lai619/static_root"`
 - Configure logging (`cognitive_apprenticeship/deploy/settings_logging.py`)
 
@@ -92,8 +92,12 @@ sudo systemctl status gunicorn619
 
 ### Networking
 
-- Configure nginx (starting from `cognitive_apprenticeship/deploy/nginx.conf`)
-
+```
+sudo cp nginx.conf /etc/nginx/nginx.conf
+sudo systemctl enable nginx
+sudo systemctl start nginx
+sudo systemctl status nginx
+```
 
 
 - Set debug to False
