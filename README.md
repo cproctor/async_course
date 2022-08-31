@@ -68,7 +68,7 @@ Install dependencies
 ```
 python3 -m venv /opt/lai619/env
 source /opt/lai619/env/bin/activate
-cd /opt/lai619/cognitive-apprenticeship/
+cd /opt/lai619/async_course
 pip install -r requirements.txt
 ```
 
@@ -77,12 +77,13 @@ Setup tasks
 ```
 ./manage.py collectstatic
 ./manage.py migrate
+deactivate
 ```
 
 ### Services
 
 ```
-cd /opt/lai619/cognitive-apprenticeship/cognitive_apprenticeship/deploy
+cd /opt/lai619/async_course/async_course/async_course/deploy
 sudo cp gunicorn619.socket gunicorn619.service /etc/systemd/system/
 sudo chown -R www-data:www-data /opt/lai619
 sudo systemctl start gunicorn619
