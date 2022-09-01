@@ -13,7 +13,7 @@ class ListReviews(LoginRequiredMixin, ListView):
     context_object_name = "roles"
 
     def get_queryset(self):
-        return ReviewerRole.objects.filter(reviewer=self.request.user)
+        return ReviewerRole.objects.filter(reviewer=self.request.user).exclude(reviewed=self.request.user)
 
 class NewReview(AssignmentSubmissionVersionMixin, FormView):
     def post(self, *args, **kwargs):
