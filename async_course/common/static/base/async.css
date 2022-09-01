@@ -45,9 +45,13 @@ form.async-form label {
     cursor: pointer;
 }
 .post .children {
-  margin-left: 10px;
+  margin-left: 40px;
   border-left: 2px solid grey;
-  padding-left: 4px;
+}
+.post.nested {
+  border-top: 2px solid grey;
+  padding-top: 6px;
+  padding-left: 6px;
 }
 .post.new {
   border-left: 4px solid #e74c3c;
