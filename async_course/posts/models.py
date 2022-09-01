@@ -54,7 +54,7 @@ class Post(PandocMarkdownModel):
             return User.objects.all()
         else:
             return set(
-                User.objects.filter(profile__is_teacher=True).all() + 
+                list(User.objects.filter(profile__is_teacher=True).all()) + 
                 [post.author for post in self.tree()]
             )
 
