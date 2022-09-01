@@ -57,6 +57,10 @@ form.async-form label {
   border-left: 4px solid #e74c3c;
   padding-left: 2px;
 }
+.post h2 {
+  font-size: 1em;
+  margin: 1em 0 0 0;
+}
 .pub-reference, .csl-entry {
   margin-left: 20px;
   text-indent: -20px;
