@@ -61,6 +61,11 @@ form.async-form label {
   font-size: 1em;
   margin: 1em 0 0 0;
 }
+.post blockquote {
+  background-color: #eee;
+  border-left: 4px solid #bbb;
+  padding-left: 4px;
+}
 .pub-reference, .csl-entry {
   margin-left: 20px;
   text-indent: -20px;
