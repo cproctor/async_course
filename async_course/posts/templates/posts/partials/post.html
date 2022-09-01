@@ -1,7 +1,7 @@
 {% load post_tags %}
 
 <article class="post{% if nested %} nested{% endif %}">
-    {% if not nested %} 
+    {% if post.is_root %} 
       <h1>{{post.title}}</h1>
     {% endif %}
     <div class="post-details">
