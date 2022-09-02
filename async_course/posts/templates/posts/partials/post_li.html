@@ -1,7 +1,13 @@
 {% load post_tags %}
 
 <li class="post{% if post.pinned %} pinned{% endif %}{% if post.is_new %} new{% endif %}">
-  <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
+  {% if post.is_root %}
+    <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
+  {% else %}
+    <a href="{% url 'posts:detail' post.id %}">{{post.lede}}</a>
+    (reply to <a href="{% url 'posts:detail' post.root_post.id %}">{{post.root_post.title}}</a>)
+  {% endif %}
+  </a>
   <div class="post-details">
       {% include "posts/partials/upvote.html" with static=True %}
       {{post.score}} point{{post.score|pluralize}} 

@@ -2,7 +2,12 @@
 
 <article class="post">
     <h1>
-      <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
+      {% if post.is_root %}
+        <a href="{% url 'posts:detail' post.id %}">{{post.title}}</a>
+      {% else %}
+        <a href="{% url 'posts:detail' post.id %}">{{post.lede}}</a>
+        (reply to <a href="{% url 'posts:detail' post.root_post.id %}">{{post.root_post.title}}</a>)
+      {% endif %}
     </h1>
     <div class="post-details">
       {% with static=True %}

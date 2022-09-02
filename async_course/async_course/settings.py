@@ -143,6 +143,7 @@ TMP_DIR = "/tmp"
 PINNED_POST_PRIORITY = 100
 POST_GRAVITY = 1.5
 POST_UPVOTE_HOUR_LIMIT = 4
+POST_LEDE_WORDS = 6
 
 # Only for dev management commands
 ZOTERO_DATA_DIR = Path("/Users/chrisp/Zotero")

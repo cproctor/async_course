@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
 import arrow
+import re
 
 class Post(PandocMarkdownModel):
     date_created = models.DateTimeField(auto_now_add=True)
@@ -42,7 +43,14 @@ class Post(PandocMarkdownModel):
         return self.parent is None
 
     def root_post(self):
-        return self if self.is_root() else self.parent
+        return self if self.is_root() else self.parent.root_post()
+
+    def lede(self):
+        text = re.sub('<[^>]+>', '', self.html).split()
+        lede_words =  ' '.join(text[:settings.POST_LEDE_WORDS])
+        if len(text) > settings.POST_LEDE_WORDS:
+            lede_words += '...'
+        return lede_words
 
     # TODO inefficient; should be memoized
     # TODO: acyclic structure not enforced
