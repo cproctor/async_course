@@ -1,0 +1,13 @@
+# /etc/systemd/system/async_course_update_post_priorities.service
+# Update path to virtualenv python and manage.py
+
+[Unit]
+Description=Update post priorities for async course
+Wants=async_course_update_post_priorities.timer
+
+[Service]
+Type=oneshot
+ExecStart=/opt/lai619/env/bin/python /opt/lai619/async_course/async_course/manage.py update_post_priorities
+
+[Install]
+WantedBy=multi-user.target

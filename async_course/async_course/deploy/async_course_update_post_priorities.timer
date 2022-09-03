@@ -1,0 +1,12 @@
+# /etc/systemd/system/async_course_update_post_priorities.timer
+
+[Unit]
+Description=Timer to update post priorities every five minutes
+Requires=async_course_update_post_priorities.service
+
+[Timer]
+Unit=async_course_update_post_priorities.service
+OnUnitActiveSec=300
+
+[Install]
+WantedBy=timers.target
