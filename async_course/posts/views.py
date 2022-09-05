@@ -9,6 +9,7 @@ from posts.forms import PostForm, PostReplyForm
 from profiles.mixins import AuthorOrTeacherRequiredMixin
 from events.models import Event, Notification
 from analytics.mixins import AnalyticsMixin
+from django.http import HttpResponseRedirect
 
 class PostList(LoginRequiredMixin, AnalyticsMixin, ListView):
     queryset = Post.objects.filter(parent=None)
@@ -59,7 +60,6 @@ class NewPost(LoginRequiredMixin, AnalyticsMixin, CreateView):
 
 class EditPost(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
     model = Post
-    form_class = PostForm
     template_name = "posts/post_form.html"
 
     def get_context_data(self, **kwargs):
@@ -67,6 +67,12 @@ class EditPost(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
         context['prompt'] = "Edit post"
         context['url'] = reverse_lazy("posts:edit", args=[self.object.pk])
         return context
+
+    def get_form_class(self):
+        if self.get_object().is_root():
+            return PostForm
+        else:
+            return PostReplyForm
 
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
@@ -136,6 +142,10 @@ class ShowPost(LoginRequiredMixin, AnalyticsMixin, DetailView):
     model = Post
 
     def get(self, *args, **kwargs):
+        post = self.get_object()
+        if not post.is_root():
+            url = reverse_lazy('posts:detail', args=[post.root_post().id]) + f"#post-{post.id}"
+            return HttpResponseRedirect(url)
         result = super().get(*args, **kwargs)
         post_ids = [p.id for p in self.get_object().tree()]
         n = self.request.user.notifications.filter(
