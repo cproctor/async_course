@@ -15,8 +15,9 @@ from assignments.mixins import AssignmentSubmissionsMixin
 import magic
 from pathlib import Path
 from events.models import Event
+from analytics.mixins import AnalyticsMixin
 
-class ListAssignments(LoginRequiredMixin, ListView):
+class ListAssignments(AnalyticsMixin, LoginRequiredMixin, ListView):
     queryset = Assignment.objects.filter(active=True)
     context_object_name = "assignments"
 
@@ -27,7 +28,7 @@ class ListAssignments(LoginRequiredMixin, ListView):
         context['assignments_with_status'] = aws
         return context
 
-class NewAssignment(TeacherRequiredMixin, CreateView):
+class NewAssignment(AnalyticsMixin, TeacherRequiredMixin, CreateView):
     model = Assignment
     form_class = AssignmentForm
     template_name = "assignments/assignment_form.html"
@@ -50,7 +51,7 @@ class NewAssignment(TeacherRequiredMixin, CreateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class EditAssignment(TeacherRequiredMixin, UpdateView):
+class EditAssignment(AnalyticsMixin, TeacherRequiredMixin, UpdateView):
     model = Assignment
     form_class = AssignmentForm
     template_name = "assignments/assignment_form.html"
@@ -73,10 +74,10 @@ class EditAssignment(TeacherRequiredMixin, UpdateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class ShowAssignment(LoginRequiredMixin, DetailView):
+class ShowAssignment(AnalyticsMixin, LoginRequiredMixin, DetailView):
     model = Assignment
 
-class ShowAssignmentRoster(DetailView):
+class ShowAssignmentRoster(AnalyticsMixin, DetailView):
     queryset = Assignment.objects.filter(has_submissions=True)
     template_name = "assignments/assignment_roster.html"
 
@@ -86,7 +87,7 @@ class ShowAssignmentRoster(DetailView):
         context['roster'] = [[u, self.object.get_status(u)] for u in students]
         return context
 
-class ShowAssignmentSubmissions(AssignmentSubmissionsMixin, FormMixin, ListView):
+class ShowAssignmentSubmissions(AnalyticsMixin, AssignmentSubmissionsMixin, FormMixin, ListView):
 
     form_class = SubmissionForm
 
@@ -119,7 +120,7 @@ class ShowAssignmentSubmissions(AssignmentSubmissionsMixin, FormMixin, ListView)
             context['form'] = form
             return render(self.request, "assignments/submission_list.html", context)
 
-class DownloadSubmission(LoginRequiredMixin, View):
+class DownloadSubmission(LoginRequiredMixin, AnalyticsMixin, View):
 
     def get_object(self):
         return get_object_or_404(Submission, 
@@ -140,7 +141,7 @@ class DownloadSubmission(LoginRequiredMixin, View):
         else:
             raise PermissionDenied()
 
-class DownloadExample(LoginRequiredMixin, View):
+class DownloadExample(LoginRequiredMixin, AnalyticsMixin, View):
 
     def get_object(self):
         return get_object_or_404(AssignmentExample, 

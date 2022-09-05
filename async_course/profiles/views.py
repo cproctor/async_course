@@ -12,8 +12,9 @@ from lai_619.grades import LAI619Grader
 from django.contrib.auth.views import PasswordChangeView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from analytics.mixins import AnalyticsMixin
 
-class ShowProfile(LoginRequiredMixin, DetailView):
+class ShowProfile(LoginRequiredMixin, AnalyticsMixin, DetailView):
     model = Profile
 
     def get_object(self, queryset=None):
@@ -30,7 +31,7 @@ class ShowProfile(LoginRequiredMixin, DetailView):
         context['posts'] = Post.objects.filter(author=self.get_user()).all()
         return context
 
-class ShowGrades(LoginRequiredMixin, DetailView):
+class ShowGrades(LoginRequiredMixin, AnalyticsMixin, DetailView):
     model = Profile
     template_name = "profiles/profile_grades.html"
 
@@ -46,7 +47,7 @@ class ShowGrades(LoginRequiredMixin, DetailView):
         context['grades'] = grader.get_grades(self.request.user)
         return context
 
-class EditProfile(AuthorOrTeacherRequiredMixin, UpdateView):
+class EditProfile(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
     model = Profile
     form_class = ProfileForm
     template_name = "profiles/profile_form.html"
@@ -91,7 +92,7 @@ class EditProfile(AuthorOrTeacherRequiredMixin, UpdateView):
             }
             return render(self.request, self.template_name, context)
 
-class ChangePassword(PasswordChangeView):
+class ChangePassword(AnalyticsMixin, PasswordChangeView):
     template_name = "profiles/password_form.html"
     success_url = '/'
 

@@ -8,8 +8,9 @@ from posts.models import Post
 from posts.forms import PostForm, PostReplyForm
 from profiles.mixins import AuthorOrTeacherRequiredMixin
 from events.models import Event, Notification
+from analytics.mixins import AnalyticsMixin
 
-class PostList(LoginRequiredMixin, ListView):
+class PostList(LoginRequiredMixin, AnalyticsMixin, ListView):
     queryset = Post.objects.filter(parent=None)
     context_object_name = "posts"
 
@@ -24,7 +25,8 @@ class PostList(LoginRequiredMixin, ListView):
             post.is_new = bool(unseen_post_ids.intersection(tree_ids))
         return context
 
-class NewPost(LoginRequiredMixin, CreateView):
+class NewPost(LoginRequiredMixin, AnalyticsMixin, CreateView):
+    model = Post
     form_class = PostForm
     template_name = "posts/post_form.html"
 
@@ -43,6 +45,7 @@ class NewPost(LoginRequiredMixin, CreateView):
             obj.save()
             obj.update_priority()
             obj.save()
+            self.object = obj
             evt = Event(user=obj.author, action=Event.EventActions.CREATED_POST, 
                     object_id=obj.id)
             evt.save()
@@ -54,7 +57,7 @@ class NewPost(LoginRequiredMixin, CreateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class EditPost(AuthorOrTeacherRequiredMixin, UpdateView):
+class EditPost(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = "posts/post_form.html"
@@ -85,7 +88,7 @@ class EditPost(AuthorOrTeacherRequiredMixin, UpdateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class ReplyToPost(LoginRequiredMixin, CreateView):
+class ReplyToPost(LoginRequiredMixin, AnalyticsMixin, CreateView):
     model = Post
     form_class = PostReplyForm
     template_name = "posts/post_form.html"
@@ -115,7 +118,7 @@ class ReplyToPost(LoginRequiredMixin, CreateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class UpvotePost(LoginRequiredMixin, UpdateView):
+class UpvotePost(LoginRequiredMixin, AnalyticsMixin, UpdateView):
     model = Post
 
     def get(self, *args, **kwargs):
@@ -129,7 +132,7 @@ class UpvotePost(LoginRequiredMixin, UpdateView):
             obj.upvotes.create(voter=self.request.user)
         return redirect('posts:detail', pk=obj.id)
 
-class ShowPost(DetailView):
+class ShowPost(LoginRequiredMixin, AnalyticsMixin, DetailView):
     model = Post
 
     def get(self, *args, **kwargs):

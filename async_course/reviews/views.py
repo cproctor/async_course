@@ -8,14 +8,15 @@ from reviews.forms import ReviewForm, AuthoritativeReviewForm
 from reviews.models import Review, ReviewerRole
 from django.contrib.auth.mixins import LoginRequiredMixin
 from events.models import Event
+from analytics.mixins import AnalyticsMixin
 
-class ListReviews(LoginRequiredMixin, ListView):
+class ListReviews(LoginRequiredMixin, AnalyticsMixin, ListView):
     context_object_name = "roles"
 
     def get_queryset(self):
         return ReviewerRole.objects.filter(reviewer=self.request.user).exclude(reviewed=self.request.user)
 
-class NewReview(AssignmentSubmissionVersionMixin, FormView):
+class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
     def post(self, *args, **kwargs):
         form = self.get_review_form_class()(self.request.POST)
         if form.is_valid():
@@ -41,7 +42,7 @@ class NewReview(AssignmentSubmissionVersionMixin, FormView):
             context['status'] = self.assignment.get_status(self.author)
         return context
 
-class EditReview(AuthorOrTeacherRequiredMixin, UpdateView):
+class EditReview(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
     model = Review
     template_name = "reviews/review_form.html"
 
@@ -72,5 +73,5 @@ class EditReview(AuthorOrTeacherRequiredMixin, UpdateView):
             self.get_object().reviewer_role.reviewed
         ])
 
-class DeleteReview(AuthorOrTeacherRequiredMixin, DeleteView):
+class DeleteReview(AuthorOrTeacherRequiredMixin, AnalyticsMixin, DeleteView):
     pass

@@ -154,3 +154,63 @@ SEND_EMAIL = False
 EMAIL_SENDER = "chris.proctor@gmail.com"
 EMAIL_SUBJECT_PREFIX = "[LAI 619] "
 EMAIL_BASE_URL = "https://cisljournal.net"
+EMAIL_HOST = "smtp.fastmail.com"
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "chris@chrisproctor.net"
+EMAIL_HOST_PASSWORD = "--APP-PASSWORD--"
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "root": {"level": "INFO", "handlers": ["file"]},
+    "handlers": {
+        "file": {
+            "level": "INFO",
+            "class": "logging.FileHandler",
+            "filename": "django.log",
+            "formatter": "app",
+        },
+        'analytics': {
+            'class': 'logging.FileHandler',
+            'level': 'INFO',
+            'filename': 'analytics.log',
+            'formatter': 'json'
+        },
+        'email': {
+            'class': 'logging.FileHandler',
+            'level': 'INFO',
+            'filename': 'email.log',
+            'formatter': 'json'
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["file"],
+            "level": "INFO",
+            "propagate": True
+        },
+        'async_course.analytics': {
+            'handlers': ['analytics'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'async_course.email': {
+            'handlers': ['email'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+    "formatters": {
+        "app": {
+            "format": (
+                u"%(asctime)s [%(levelname)-8s] "
+                "(%(module)s.%(funcName)s) %(message)s"
+            ),
+            "datefmt": "%Y-%m-%d %H:%M:%S",
+        },
+        'json': {
+            '()': 'json_log_formatter.JSONFormatter',
+        },
+    },
+}

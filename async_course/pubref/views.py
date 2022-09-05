@@ -12,12 +12,13 @@ from django.conf import settings
 from profiles.mixins import AuthorOrTeacherRequiredMixin
 from pubref.models import Publication, PublicationFile
 from pubref.forms import AddPublicationsForm, EditPublicationForm
+from analytics.mixins import AnalyticsMixin
 
-class PublicationList(LoginRequiredMixin, ListView):
+class PublicationList(LoginRequiredMixin, AnalyticsMixin, ListView):
     model = Publication
     context_object_name = "publications"
 
-class AddPublications(LoginRequiredMixin, FormView):
+class AddPublications(LoginRequiredMixin, AnalyticsMixin, FormView):
     template_name = "pubref/add_publications_form.html"
     form_class = AddPublicationsForm
     success_url = reverse_lazy("pubref:list")
@@ -72,7 +73,7 @@ class AddPublications(LoginRequiredMixin, FormView):
         else:
             messages.warning(self.request, msg)
 
-class ShowPublication(LoginRequiredMixin, DetailView):
+class ShowPublication(LoginRequiredMixin, AnalyticsMixin, DetailView):
     model = Publication
 
     def get_context_data(self, **kwargs):
@@ -80,7 +81,7 @@ class ShowPublication(LoginRequiredMixin, DetailView):
         context['posts'] = self.get_object().post_set.all()
         return context
 
-class PublicationListBibtex(LoginRequiredMixin, View):
+class PublicationListBibtex(LoginRequiredMixin, AnalyticsMixin, View):
 
     def get(self, *args, **kwargs):
         bibfile = Path(settings.BIBLIOGRAHY)
@@ -92,7 +93,7 @@ class PublicationListBibtex(LoginRequiredMixin, View):
         else:
             raise Http404("No publications have been added yet")
 
-class EditPublication(AuthorOrTeacherRequiredMixin, UpdateView):
+class EditPublication(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
     model = Publication
     form_class = EditPublicationForm
     author_attribute_name = "contributor"
@@ -115,12 +116,12 @@ class EditPublication(AuthorOrTeacherRequiredMixin, UpdateView):
             context['form'] = form
             return render(self.request, self.template_name, context)
 
-class DeletePublication(AuthorOrTeacherRequiredMixin, DeleteView):
+class DeletePublication(AuthorOrTeacherRequiredMixin, AnalyticsMixin, DeleteView):
     model = Publication
     author_attribute_name = "contributor"
     success_url = reverse_lazy('pubref:list')
 
-class DownloadPublicationFile(LoginRequiredMixin, View):
+class DownloadPublicationFile(LoginRequiredMixin, AnalyticsMixin, View):
     def get_object(self):
         return get_object_or_404(PublicationFile, 
                 publication__slug=self.kwargs['slug'], pk=self.kwargs['pk'])

@@ -6,3 +6,4 @@ async_course/db.sqlite3
 async_course/*.bib
 export
 examples
+*.log

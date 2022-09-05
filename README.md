@@ -109,3 +109,10 @@ sudo systemctl status nginx
 
 
 - Set debug to False
+
+## Future refactoring
+
+I want to factor out apps containing functionality I use frequently. These include:
+- analytics (AnalyticsMixin)
+- profiles (called roles in cognitive_apprenticeship; models, views, mixins, signals)
+- common (email)

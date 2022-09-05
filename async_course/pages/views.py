@@ -7,12 +7,13 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from profiles.mixins import TeacherRequiredMixin
 from pages.models import Page
 from pages.forms import PageForm
+from analytics.mixins import AnalyticsMixin
 
-class PageList(TeacherRequiredMixin, ListView):
+class PageList(TeacherRequiredMixin, AnalyticsMixin, ListView):
     model = Page
     context_object_name = "pages"
 
-class NewPage(TeacherRequiredMixin, CreateView):
+class NewPage(TeacherRequiredMixin, AnalyticsMixin, CreateView):
     model = Page
     form_class = PageForm
     template_name = "pages/page_form.html"
@@ -35,7 +36,7 @@ class NewPage(TeacherRequiredMixin, CreateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
     
-class EditPage(TeacherRequiredMixin, UpdateView):
+class EditPage(TeacherRequiredMixin, AnalyticsMixin, UpdateView):
     model = Page
     form_class = PageForm
     template_name = "pages/page_form.html"
@@ -58,5 +59,5 @@ class EditPage(TeacherRequiredMixin, UpdateView):
             context["form"] = form
             return render(self.request, self.template_name, context)
 
-class ShowPage(LoginRequiredMixin, DetailView):
+class ShowPage(LoginRequiredMixin, AnalyticsMixin, DetailView):
     model = Page
