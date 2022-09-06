@@ -75,9 +75,9 @@ class EditPost(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
             return PostReplyForm
 
     def dispatch(self, request, *args, **kwargs):
-        obj = self.get_object()
-        if not obj.editable():
-            return redirect("posts:detail", pk=obj.id)
+        self.object = self.get_object()
+        if not self.object.editable():
+            return redirect("posts:detail", pk=self.object.id)
         return super().dispatch(request, *args, **kwargs)
 
     def post(self, *args, **kwargs):
