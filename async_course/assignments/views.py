@@ -16,6 +16,7 @@ import magic
 from pathlib import Path
 from events.models import Event
 from analytics.mixins import AnalyticsMixin
+from reviews.email import notify_reviewers_of_new_submission
 
 class ListAssignments(AnalyticsMixin, LoginRequiredMixin, ListView):
     queryset = Assignment.objects.filter(active=True)
@@ -108,6 +109,7 @@ class ShowAssignmentSubmissions(AnalyticsMixin, AssignmentSubmissionsMixin, Form
             sub.version = Submission.get_next_version(self.author, self.assignment)
             sub.mime = magic.from_buffer(sub.upload.file.read(2048), mime=True)
             sub.save()
+            notify_reviewers_of_new_submission(sub)
             evt = Event(user=self.author, action=Event.EventActions.ADDED_SUBMISSION, 
                     object_id=sub.id)
             evt.save()

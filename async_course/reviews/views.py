@@ -9,6 +9,7 @@ from reviews.models import Review, ReviewerRole
 from django.contrib.auth.mixins import LoginRequiredMixin
 from events.models import Event
 from analytics.mixins import AnalyticsMixin
+from reviews.email import notify_author_of_new_review
 
 class ListReviews(LoginRequiredMixin, AnalyticsMixin, ListView):
 
@@ -33,6 +34,7 @@ class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
                 review.accepted=False
             review.compile_markdown()
             review.save()
+            notify_author_of_new_review(review)
             evt = Event(user=self.author, action=Event.EventActions.ADDED_REVIEW, 
                     object_id=review.id)
             evt.save()

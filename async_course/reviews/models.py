@@ -21,6 +21,14 @@ class ReviewerRole(models.Model):
         'COMPLETE'
     ]
 
+    def __str__(self):
+        return "{} reviewing {}'s {} ({})".format(
+            self.reviewer.username,
+            self.reviewed.username,
+            self.assignment.title,
+            self.get_status()
+        )
+
     def get_status(self):
         subs = self.assignment.submissions.filter(author=self.reviewed)
         if subs.filter(reviews__accepted=True):
