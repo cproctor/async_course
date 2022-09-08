@@ -6,8 +6,6 @@ from profiles.models import Profile
 class ProfileForm(forms.Form):
     first_name = forms.CharField(min_length=1)
     last_name = forms.CharField(min_length=1)
-    email_frequency = forms.CharField(label='Email frequency', 
-            widget=forms.RadioSelect(choices=Profile.EmailFrequency.choices))
     markdown = forms.CharField(label='Profile text', 
             widget=forms.Textarea, required=False)
 
