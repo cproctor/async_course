@@ -85,17 +85,23 @@ form.async-form label {
   flex-direction: column;
 }
 .submission {
-  border: 1px solid black;
+  border-radius: 6px;
   margin: 8px 0;
-  padding: 4px;
-  width: 60%;
+  padding: 8px;
+  min-width: 160px;
   align-self: flex-start;
+  background-color: #2980b9;
+}
+.submission a {
+    color: white;
+    text-decoration: none;
 }
 .review {
-  border: 1px solid black;
+  border-top: 2px solid grey;
+  border-left: 2px solid grey;
   margin: 8px 0;
   padding: 4px;
-  width: 60%;
+  width: 80%;
   align-self: flex-end;
 }
 pre {

@@ -7,7 +7,6 @@
 {% for submission in submissions %}
   {% include "assignments/partials/submission.html" %}
   {% for review in submission.reviews.all %}
-    SUBID: {{submission.id}}
     {% include "assignments/partials/review.html" %}
   {% endfor %}
   {% include "assignments/partials/review_form.html" with reply=submission.reviews.exists %}
