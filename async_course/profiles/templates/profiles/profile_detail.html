@@ -3,6 +3,17 @@
 {% block content %}
   <h1>{{profile.user.first_name}} {{profile.user.last_name}}</h1>
   {{profile.html|safe}}
+  {% if group %}
+  <h2>Group: {{group.name}}</h2>
+  <ul>
+  {% for gm in group_members %}
+    <li><a href="{% url 'profiles:detail' gm.username %}">
+      {{gm.first_name}} {{gm.last_name}}
+    </a></li>
+  {% endfor %}
+  </ul>
+
+  {% endif %}
   <h2>Posts</h2>
   {% if posts %}
     <ol>

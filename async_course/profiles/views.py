@@ -13,6 +13,7 @@ from django.contrib.auth.views import PasswordChangeView
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from analytics.mixins import AnalyticsMixin
+from django.contrib.auth.models import Group
 
 class ShowProfile(LoginRequiredMixin, AnalyticsMixin, DetailView):
     model = Profile
@@ -27,8 +28,13 @@ class ShowProfile(LoginRequiredMixin, AnalyticsMixin, DetailView):
         return self.get_object().user
 
     def get_context_data(self, **kwargs):
+        user = self.get_user()
+        group = user.groups.first() if user.groups.exists() else None
         context = super().get_context_data(**kwargs)
-        context['posts'] = Post.objects.filter(author=self.get_user()).all()
+        context['posts'] = Post.objects.filter(author=user).all()
+        if group:
+            context['group'] = group
+            context['group_members'] = group.user_set.exclude(username=user.username).all()
         return context
 
 class ShowGrades(LoginRequiredMixin, AnalyticsMixin, DetailView):
