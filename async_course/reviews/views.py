@@ -11,10 +11,16 @@ from events.models import Event
 from analytics.mixins import AnalyticsMixin
 
 class ListReviews(LoginRequiredMixin, AnalyticsMixin, ListView):
-    context_object_name = "roles"
 
     def get_queryset(self):
-        return ReviewerRole.objects.filter(reviewer=self.request.user).exclude(reviewed=self.request.user)
+        return ReviewerRole.objects.filter(reviewer=self.request.user).exclude(
+                reviewed=self.request.user)
+
+    def get_context_data(self, *args, **kwargs):
+        roles = self.get_queryset()
+        context = super().get_context_data(*args, **kwargs)
+        context['roles'] = [r for r in self.get_queryset() if r.get_status() != 'NOT_STARTED']
+        return context
 
 class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
     def post(self, *args, **kwargs):

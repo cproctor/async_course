@@ -22,3 +22,14 @@ class Command(BaseCommand):
                         reviewed=student,
                         assignment=assignment,
                     )
+                    if student.groups.exists():
+                        group = student.groups.first()
+                        for peer in group.user_set.exclude(username=student.username).all():
+                            ReviewerRole.objects.get_or_create(
+                                reviewer=peer,
+                                reviewed=student,
+                                assignment=assignment,
+                            )
+
+
+
