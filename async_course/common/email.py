@@ -5,7 +5,7 @@ from datetime import datetime
 
 logger = logging.getLogger("async_course.email")
 
-def send_journal_email(subject, body, recipients):
+def send_email(subject, body, recipients):
     """Sends an email and logs the result.
     This function should be used to send all email throughout the application so
     that it can be managed centrally.
