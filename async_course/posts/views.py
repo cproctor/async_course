@@ -82,7 +82,7 @@ class EditPost(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
 
     def post(self, *args, **kwargs):
         obj = self.get_object()
-        form = PostForm(self.request.POST, instance=obj)
+        form = self.get_form_class()(self.request.POST, instance=obj)
         if form.is_valid():
             obj = form.save(commit=False)
             obj.author = self.request.user
