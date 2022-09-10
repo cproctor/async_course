@@ -11,7 +11,7 @@ from django.core.exceptions import PermissionDenied
 from profiles.mixins import TeacherRequiredMixin
 from assignments.models import Assignment, Submission, AssignmentExample
 from assignments.forms import AssignmentForm, SubmissionForm
-from assignments.mixins import AssignmentSubmissionsMixin
+from assignments.mixins import AssignmentSubmissionsMixin, AssignmentSubmissionVersionMixin
 import magic
 from pathlib import Path
 from events.models import Event
@@ -122,26 +122,14 @@ class ShowAssignmentSubmissions(AnalyticsMixin, AssignmentSubmissionsMixin, Form
             context['form'] = form
             return render(self.request, "assignments/submission_list.html", context)
 
-class DownloadSubmission(LoginRequiredMixin, AnalyticsMixin, View):
-
-    def get_object(self):
-        return get_object_or_404(Submission, 
-            assignment__slug=self.kwargs['slug'],
-            author__username=self.kwargs['username'],
-            version=self.kwargs['version']
-        )
+class DownloadSubmission(AssignmentSubmissionVersionMixin, AnalyticsMixin, View):
 
     def get(self, *args, **kwargs):
-        user = self.request.user
-        sub = self.get_object()
-        if sub.shared or user.profile.is_teacher or user == sub.author:
-            filename = Path(sub.upload.file.name).name
-            return HttpResponse(sub.upload.file.read(), headers={
-                'Content-Type': sub.mime,
-                'Content-Disposition': f'attachment; filename="{filename}"',
-            })
-        else:
-            raise PermissionDenied()
+        filename = Path(self.submission.upload.file.name).name
+        return HttpResponse(self.submission.upload.file.read(), headers={
+            'Content-Type': self.submission.mime,
+            'Content-Disposition': f'attachment; filename="{filename}"',
+        })
 
 class DownloadExample(LoginRequiredMixin, AnalyticsMixin, View):
 
