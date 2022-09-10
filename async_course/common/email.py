@@ -20,9 +20,12 @@ def send_email(subject, body, recipients):
         'sent': settings.SEND_EMAIL,
     })
     if settings.SEND_EMAIL:
-        send_mail(
-            settings.EMAIL_SUBJECT_PREFIX + subject,
-            body, 
-            settings.EMAIL_SENDER, 
-            recipients,
-        )
+        try:
+            send_mail(
+                settings.EMAIL_SUBJECT_PREFIX + subject,
+                body, 
+                settings.EMAIL_SENDER, 
+                recipients,
+            )
+        except Exception as e:
+            logger.error(e)
