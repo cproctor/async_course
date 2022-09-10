@@ -68,7 +68,6 @@ class EditProfile(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
         form = ProfileForm({
             'first_name': profile.user.first_name,
             'last_name': profile.user.last_name,
-            'email_frequency': profile.email_frequency,
             'markdown': profile.markdown,
         }, profile.user)
         context = {
@@ -84,7 +83,6 @@ class EditProfile(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
         if form.is_valid(): 
             profile.markdown = form.cleaned_data['markdown']
             profile.compile_markdown()
-            profile.email_frequency = form.cleaned_data['email_frequency']
             profile.save()
             profile.user.first_name = form.cleaned_data['first_name']
             profile.user.last_name = form.cleaned_data['last_name']
