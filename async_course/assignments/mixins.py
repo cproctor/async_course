@@ -12,6 +12,8 @@ class AssignmentSubmissionsMixin:
     """
 
     def dispatch(self, request, *args, **kwargs):
+        if not self.request.user.is_authenticated:
+            return redirect('login')
         self.look_up_context_objects()
         return super().dispatch(request, *args, **kwargs)
 
