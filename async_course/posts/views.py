@@ -76,7 +76,8 @@ class EditPost(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.object = self.get_object()
-        if not self.object.editable():
+        u = self.request.user
+        if not self.object.editable() or (u.is_authenticated and u.profile.is_teacher):
             return redirect("posts:detail", pk=self.object.id)
         return super().dispatch(request, *args, **kwargs)
 
