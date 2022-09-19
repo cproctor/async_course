@@ -26,4 +26,5 @@ urlpatterns = [
     path('references/', include('pubref.urls')),
     path('pages/', include('pages.urls')),
     path('admin/', admin.site.urls),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]
