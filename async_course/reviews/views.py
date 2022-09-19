@@ -12,16 +12,16 @@ from analytics.mixins import AnalyticsMixin
 from reviews.email import notify_author_of_new_review
 
 class ListReviews(LoginRequiredMixin, AnalyticsMixin, ListView):
+    context_object_name = 'roles'
 
     def get_queryset(self):
-        return ReviewerRole.objects.filter(reviewer=self.request.user).exclude(
-                reviewed=self.request.user)
-
-    def get_context_data(self, *args, **kwargs):
-        roles = self.get_queryset()
-        context = super().get_context_data(*args, **kwargs)
-        context['roles'] = [r for r in self.get_queryset() if r.get_status() != 'NOT_STARTED']
-        return context
+        return ReviewerRole.objects.filter(
+            reviewer=self.request.user
+        ).exclude(
+            reviewed=self.request.user
+        ).exclude(
+            status=ReviewerRole.Status.NOT_STARTED
+        )
 
 class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
     def post(self, *args, **kwargs):
@@ -32,6 +32,11 @@ class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
             review.submission = self.submission
             if not self.reviewer_role.authoritative:
                 review.accepted=False
+            self.reviewer_role.status = self.reviewer_role.get_status()
+            self.reviewer_role.save()
+            for rr in self.reviewer_role.adjacent():
+                rr.status = rr.get_status()
+                rr.save()
             review.compile_markdown()
             review.save()
             notify_author_of_new_review(review)
@@ -48,7 +53,7 @@ class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
             context['submissions'] = self.assignment.submissions.filter(author=self.author).all()
             context['author'] = self.author
             context['status'] = self.assignment.get_status(self.author)
-        return context
+        return render(self.request, 'reviews/review_form.html', context)
 
 class EditReview(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
     model = Review
@@ -66,6 +71,9 @@ class EditReview(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
             review = form.save(commit=False)
             review.compile_markdown()
             review.save()
+            for rr in review.reviewer_role.adjacent():
+                rr.status = rr.get_status()
+                rr.save()
             return redirect(self.get_success_url())
         else:
             context = self.get_context_data()

@@ -13,13 +13,14 @@ class ReviewerRole(models.Model):
             on_delete=models.CASCADE, null=True)
     authoritative = models.BooleanField(default=False)
     active = models.BooleanField(default=True)
+    
+    class Status(models.TextChoices):
+        NOT_STARTED = '0', "Not started"
+        WAITING_FOR_REVIEW = '1', "Waiting for review"
+        WAITING_FOR_SUBMISSION = '2', "Waiting for submission"
+        COMPLETE = '3', "Complete"
 
-    reviewer_role_statuses = [
-        'NOT_STARTED', 
-        'WAITING_FOR_REVIEW', 
-        'WAITING_FOR_SUBMISSION', 
-        'COMPLETE'
-    ]
+    status = models.CharField(max_length=1, choices=Status.choices, default=Status.NOT_STARTED)
 
     def __str__(self):
         return "{} reviewing {}'s {} ({})".format(
@@ -32,18 +33,23 @@ class ReviewerRole(models.Model):
     def get_status(self):
         subs = self.assignment.submissions.filter(author=self.reviewed)
         if subs.filter(reviews__accepted=True):
-            return 'COMPLETE'
+            return self.Status.COMPLETE
         elif not subs.exists():
-            return 'NOT_STARTED'
+            return self.Status.NOT_STARTED
         else:
             if not self.reviews.exists():
-                return 'WAITING_FOR_REVIEW'
+                return self.Status.WAITING_FOR_REVIEW
             last_submission_date = subs.last().date_created
             last_review_date = self.reviews.last().date_created
             if last_submission_date > last_review_date:
-                return 'WAITING_FOR_REVIEW'
+                return self.Status.WAITING_FOR_REVIEW
             else:
-                return 'WAITING_FOR_SUBMISSION'
+                return self.Status.WAITING_FOR_SUBMISSION
+
+    def adjacent(self):
+        "Returns reviewer_roles having the same assignment and reviewed"
+        return ReviewerRole.objects.filter(
+                assignment=self.assignment, reviewed=self.reviewed)
 
 class Review(PandocMarkdownModel):
     date_created = models.DateTimeField(auto_now_add=True, null=True)

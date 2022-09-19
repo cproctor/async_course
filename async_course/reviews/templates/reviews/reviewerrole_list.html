@@ -5,7 +5,7 @@
 <ul>
     {% for rr in roles %}
     <li>
-      {{rr.get_status}}
+      {{rr.get_status_display}}
       <a href="{% url 'assignments:submissions' rr.assignment.slug rr.reviewed.username %}">
           {{rr.assignment.title}}: {{rr.reviewed.first_name}} {{rr.reviewed.last_name}}
       </a>

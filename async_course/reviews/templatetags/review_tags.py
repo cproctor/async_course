@@ -1,4 +1,5 @@
 from django import template
+from reviews.models import ReviewerRole
 
 register = template.Library()
 
@@ -6,5 +7,4 @@ register = template.Library()
 def reviews_needing_action_count(user):
     if not user.is_authenticated:
         return 0
-    rrs = user.reviewer_roles.all()
-    return len([rr for rr in rrs if rr.get_status() == 'WAITING_FOR_REVIEW'])
+    return user.reviewer_roles.filter(status=ReviewerRole.Status.WAITING_FOR_REVIEW).count()
