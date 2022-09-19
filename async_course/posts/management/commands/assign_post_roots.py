@@ -7,6 +7,5 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         for root_post in Post.objects.filter(parent=None).all():
             for descendent in root_post.tree():
-                if descendent != root_post:
-                    descendent.root = root_post
-                    descendent.save()
+                descendent.root = root_post
+                descendent.save()
