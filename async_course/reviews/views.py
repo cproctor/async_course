@@ -32,13 +32,11 @@ class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
             review.submission = self.submission
             if not self.reviewer_role.authoritative:
                 review.accepted=False
-            self.reviewer_role.status = self.reviewer_role.get_status()
-            self.reviewer_role.save()
+            review.compile_markdown()
+            review.save()
             for rr in self.reviewer_role.adjacent():
                 rr.status = rr.get_status()
                 rr.save()
-            review.compile_markdown()
-            review.save()
             notify_author_of_new_review(review)
             evt = Event(user=self.author, action=Event.EventActions.ADDED_REVIEW, 
                     object_id=review.id)
