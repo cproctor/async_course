@@ -12,7 +12,7 @@ from analytics.mixins import AnalyticsMixin
 from django.http import HttpResponseRedirect
 
 class PostList(LoginRequiredMixin, AnalyticsMixin, ListView):
-    queryset = Post.objects.filter(parent=None)
+    queryset = Post.objects.filter(parent=None).prefetch_related('descendent_posts')
     context_object_name = "posts"
 
     def get_context_data(self, **kwargs):
@@ -22,7 +22,7 @@ class PostList(LoginRequiredMixin, AnalyticsMixin, ListView):
 
         context = super().get_context_data(**kwargs)
         for post in context['posts']:
-            tree_ids = set([p.id for p in post.tree()])
+            tree_ids = set([p.id for p in post.descendent_posts.all()])
             post.is_new = bool(unseen_post_ids.intersection(tree_ids))
         return context
 
@@ -45,6 +45,7 @@ class NewPost(LoginRequiredMixin, AnalyticsMixin, CreateView):
             obj.compile_markdown()
             obj.save()
             obj.update_priority()
+            obj.root = obj.root_post()
             obj.save()
             self.object = obj
             evt = Event(user=obj.author, action=Event.EventActions.CREATED_POST, 

@@ -13,6 +13,8 @@ class Post(PandocMarkdownModel):
             on_delete=models.CASCADE)
     parent = models.ForeignKey("Post", related_name="child_posts", null=True, blank=True,
             on_delete=models.CASCADE)
+    root = models.ForeignKey("Post", related_name="descendent_posts", null=True, blank=True,
+            on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=True)
     submissions = models.ManyToManyField("assignments.Submission", related_name="posts")
     priority = models.FloatField(default=1)
@@ -42,6 +44,7 @@ class Post(PandocMarkdownModel):
     def is_root(self):
         return self.parent is None
 
+    # Prefer self.root except on post creation.
     def root_post(self):
         return self if self.is_root() else self.parent.root_post()
 
@@ -52,8 +55,7 @@ class Post(PandocMarkdownModel):
             lede_words += '...'
         return lede_words
 
-    # TODO inefficient; should be memoized
-    # TODO: acyclic structure not enforced
+    # Prefer self.descendent_posts.all(); will not include self.
     def tree(self):
         return sum([child.tree() for child in self.child_posts.all()], [self])
 
