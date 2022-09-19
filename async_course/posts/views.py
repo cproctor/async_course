@@ -149,7 +149,10 @@ class ShowPost(LoginRequiredMixin, AnalyticsMixin, DetailView):
             url = reverse_lazy('posts:detail', args=[post.root_post().id]) + f"#post-{post.id}"
             return HttpResponseRedirect(url)
         result = super().get(*args, **kwargs)
-        post_ids = [p.id for p in self.get_object().tree()]
+        post_ids = (
+            [self.get_object().id] + 
+            [p.id for p in self.get_object().descendent_posts.all()]
+        )
         n = self.request.user.notifications.filter(
             event__action=Event.EventActions.CREATED_POST,
             event__object_id__in=post_ids,

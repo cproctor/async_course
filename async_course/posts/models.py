@@ -36,7 +36,7 @@ class Post(PandocMarkdownModel):
         return self.count_tree() + self.upvotes.count() 
 
     def count_tree(self):
-        return len(self.tree())
+        return 1 + self.descendent_posts.count()
 
     def editable(self):
         return self.age_in_hours() < settings.POST_UPVOTE_HOUR_LIMIT
