@@ -53,7 +53,7 @@ form.async-form label {
   padding-top: 6px;
   padding-left: 6px;
 }
-.post.new {
+.new {
   border-left: 4px solid #e74c3c;
   padding-left: 2px;
 }

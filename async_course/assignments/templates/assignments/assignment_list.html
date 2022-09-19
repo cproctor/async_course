@@ -3,18 +3,21 @@
 {% block content %}
 <h1>Assignments</h1>
 <ul>
-    {% for status, assn in assignments_with_status %}
-    <li>
+    {% for new, status, assn in assignments_with_status %}
       {% if user.profile.is_student %}
-        <a href="{% url 'assignments:submissions' assn.slug user.username %}">
-          {{status}} 
-        </a>
-        <a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
+      <li{% if new %} class="new"{% endif %}>
+          <a href="{% url 'assignments:submissions' assn.slug user.username %}">
+            {{status}} 
+          </a>
+          <a href="{% url 'assignments:detail' assn.slug %}">
+            {{assn.title}}
+          </a>
+        </li>
       {% else %}
         {% if assn.has_submissions %}
-          <a href="{% url 'assignments:roster' assn.slug %}">{{assn.title}}</a></li>
+          <li><a href="{% url 'assignments:roster' assn.slug %}">{{assn.title}}</a></li>
         {% else %}
-          <a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
+          <li><a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
         {% endif %}
       {% endif %}
     {% endfor %}

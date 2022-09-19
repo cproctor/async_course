@@ -4,6 +4,7 @@
 {% pages_in_menu as pages %}
 {% unseen_posts_count request.user as p_action %}
 {% reviews_needing_action_count request.user as r_action %}
+{% assignments_with_unseen_reviews request.user as r_new %}
 <nav id="menu">
 	<div class="menu-left">
 		<div class="menu-item clickable{% if menu_section == 'public' %} current{% endif %}">
@@ -21,7 +22,12 @@
     {% endfor %}
       {% if not SITE_FROZEN %}
 	    <div class="menu-item clickable{% if menu_section == 'assignments' %} current{% endif %}">
-          <a href="{% url 'assignments:list' %}">Assignments</a>
+          <a href="{% url 'assignments:list' %}">
+            Assignments
+            {% if r_new %}
+                <span class="badge">{{r_new}}</span>
+            {% endif %}
+          </a>
         </div>
 	    <div class="menu-item clickable{% if menu_section == 'reviews' %} current{% endif %}">
           <a href="{% url 'reviews:list' %}">
