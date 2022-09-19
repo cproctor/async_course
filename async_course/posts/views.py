@@ -12,7 +12,7 @@ from analytics.mixins import AnalyticsMixin
 from django.http import HttpResponseRedirect
 
 class PostList(LoginRequiredMixin, AnalyticsMixin, ListView):
-    queryset = Post.objects.filter(parent=None).prefetch_related('descendent_posts')
+    queryset = Post.objects.filter(parent=None).prefetch_related('descendent_posts', 'upvotes', 'publications')
     context_object_name = "posts"
 
     def get_context_data(self, **kwargs):

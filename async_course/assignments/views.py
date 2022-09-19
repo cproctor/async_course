@@ -97,7 +97,9 @@ class ShowAssignmentSubmissions(AnalyticsMixin, AssignmentSubmissionsMixin, Form
         return super().dispatch(*args, **kwargs)
 
     def get_queryset(self):
-        return Submission.objects.filter(assignment=self.assignment, author=self.author)
+        return Submission.objects.filter(
+            assignment=self.assignment, author=self.author
+        ).prefetch_related('reviews', 'reviews__reviewer_role')
 
     def post(self, *args, **kwargs):
         form = self.form_class(self.request.POST, self.request.FILES)
