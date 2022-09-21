@@ -12,7 +12,7 @@ from analytics.mixins import AnalyticsMixin
 from django.http import HttpResponseRedirect
 
 class PostList(LoginRequiredMixin, AnalyticsMixin, ListView):
-    queryset = Post.objects.filter(parent=None).prefetch_related('descendent_posts', 'upvotes', 'publications')
+    queryset = Post.objects.filter(parent=None).prefetch_related('descendents', 'upvotes', 'publications')
     context_object_name = "posts"
 
     def get_context_data(self, **kwargs):
@@ -22,7 +22,7 @@ class PostList(LoginRequiredMixin, AnalyticsMixin, ListView):
 
         context = super().get_context_data(**kwargs)
         for post in context['posts']:
-            tree_ids = set([p.id for p in post.descendent_posts.all()])
+            tree_ids = set([p.id for p in post.descendents.all()] + [post.id])
             post.is_new = bool(unseen_post_ids.intersection(tree_ids))
         return context
 
@@ -44,8 +44,8 @@ class NewPost(LoginRequiredMixin, AnalyticsMixin, CreateView):
             obj.author = self.request.user
             obj.compile_markdown()
             obj.save()
+            obj.assign_tree_relations()
             obj.update_priority()
-            obj.root = obj.root_post()
             obj.save()
             self.object = obj
             evt = Event(user=obj.author, action=Event.EventActions.CREATED_POST, 
@@ -118,6 +118,7 @@ class ReplyToPost(LoginRequiredMixin, AnalyticsMixin, CreateView):
             obj.parent = parent
             obj.compile_markdown()
             obj.save()
+            obj.assign_tree_relations()
             obj.update_priority()
             obj.save()
             return redirect("posts:detail", pk=obj.parent.id)
@@ -149,13 +150,10 @@ class ShowPost(LoginRequiredMixin, AnalyticsMixin, DetailView):
             url = reverse_lazy('posts:detail', args=[post.root_post().id]) + f"#post-{post.id}"
             return HttpResponseRedirect(url)
         result = super().get(*args, **kwargs)
-        post_ids = (
-            [self.get_object().id] + 
-            [p.id for p in self.get_object().descendent_posts.all()]
-        )
+        tree_ids = [post.id] + [p.id for p in post.descendents.all()]
         n = self.request.user.notifications.filter(
             event__action=Event.EventActions.CREATED_POST,
-            event__object_id__in=post_ids,
+            event__object_id__in=tree_ids,
         )
         n.update(read=True)
         return result

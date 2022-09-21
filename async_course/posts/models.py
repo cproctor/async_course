@@ -13,8 +13,7 @@ class Post(PandocMarkdownModel):
             on_delete=models.CASCADE)
     parent = models.ForeignKey("Post", related_name="child_posts", null=True, blank=True,
             on_delete=models.CASCADE)
-    root = models.ForeignKey("Post", related_name="descendent_posts", null=True, blank=True,
-            on_delete=models.CASCADE)
+    ancestors = models.ManyToManyField("Post", related_name="descendents", blank=True)
     title = models.CharField(max_length=200, null=True)
     submissions = models.ManyToManyField("assignments.Submission", related_name="posts")
     priority = models.FloatField(default=1)
@@ -33,23 +32,38 @@ class Post(PandocMarkdownModel):
         return arrow.get(self.date_created).humanize()
 
     def score(self):
-        return self.count_tree() + self.upvotes.count() + self.publications.count()
+        return (
+            1 + 
+            self.descendents.count() + 
+            self.upvotes.count() + 
+            self.publications.count()
+        )
 
-    def count_tree(self):
-        tree_size = self.descendent_posts.count()
-        if not self.is_root():
-            tree_size += 1
-        return tree_size
-
+    def assign_tree_relations(self):
+        "Sets ancestor and descendent relations, based on parent relations"
+        self.ancestors.clear()
+        parent = self.parent
+        while parent:
+            self.ancestors.add(parent)
+            parent = parent.parent
+        descendents = sum([child.tree() for child in self.child_posts.all()], [])
+        self.descendents.set(descendents)
+        
     def editable(self):
         return self.age_in_hours() < settings.POST_UPVOTE_HOUR_LIMIT
 
     def is_root(self):
         return self.parent is None
 
-    # Prefer self.root except on post creation.
     def root_post(self):
-        return self if self.is_root() else self.parent.root_post()
+        return self.parent.root_post() if self.parent else self
+
+    def tree(self):
+        """Returns a flattened tree of all posts starting from this one
+        This method should only be used for (re)constructing trees;
+        otherwise self.descendents.all() is more efficient.
+        """
+        return sum([child.tree() for child in self.child_posts.all()], [self])
 
     def lede(self):
         text = re.sub('<[^>]+>', '', self.html).split()
@@ -57,10 +71,6 @@ class Post(PandocMarkdownModel):
         if len(text) > settings.POST_LEDE_WORDS:
             lede_words += '...'
         return lede_words
-
-    # Prefer self.descendent_posts.all(); will not include self.
-    def tree(self):
-        return sum([child.tree() for child in self.child_posts.all()], [self])
 
     def interested_people(self):
         if self.is_root() and self.author.profile.is_teacher:
