@@ -60,11 +60,11 @@ class Review(PandocMarkdownModel):
     accepted = models.BooleanField(default=False, null=True)
 
     def interested_people(self):
-        assn = self.reviewer_role.assignment
-        return User.objects.filter(
-            Q(reviewer_roles__assignment=assn) | 
-            Q(reviewed_roles__assignment=assn)
-        ).all()
+        people = set()
+        for role in self.reviewer_role.adjacent():
+            people.add(role.reviewer)
+            people.add(role.reviewed)
+        return people
 
     class Meta:
         ordering = ['date_created']

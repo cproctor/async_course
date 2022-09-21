@@ -83,10 +83,12 @@ class Submission(models.Model):
     shared = models.BooleanField(default=False)
 
     def interested_people(self):
-        return User.objects.filter(
-            Q(reviewer_roles__assignment=self.assignment) | 
-            Q(reviewed_roles__assignment=self.assignment)
-        ).all()
+        people = set()
+        roles = self.assignment.reviewer_roles.filter(reviewed=self.author)
+        for role in roles:
+            people.add(role.reviewer)
+            people.add(role.reviewed)
+        return people
 
     @classmethod
     def get_next_version(cls, author, assignment):

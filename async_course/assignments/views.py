@@ -150,7 +150,7 @@ class ShowAssignmentSubmissions(AnalyticsMixin, AssignmentSubmissionsMixin, Form
                     object_id=sub.id)
             evt.save()
             for user in sub.interested_people():
-                evt.notifications.create(user=user)
+                evt.notifications.get_or_create(user=user)
             return redirect("assignments:submissions", slug=self.assignment.slug, 
                     username=self.author.username)
         else:

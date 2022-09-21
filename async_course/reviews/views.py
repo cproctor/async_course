@@ -42,7 +42,7 @@ class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
                     object_id=review.id)
             evt.save()
             for user in review.interested_people():
-                evt.notifications.create(user=user)
+                evt.notifications.get_or_create(user=user)
             return redirect('assignments:submissions', slug=self.assignment.slug,
                     username=self.author.username)
         else:

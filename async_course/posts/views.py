@@ -52,7 +52,7 @@ class NewPost(LoginRequiredMixin, AnalyticsMixin, CreateView):
                     object_id=obj.id)
             evt.save()
             for user in obj.interested_people():
-                evt.notifications.create(user=user)
+                evt.notifications.get_or_create(user=user)
             return redirect("posts:detail", pk=obj.id)
         else:
             context = self.get_context_data()

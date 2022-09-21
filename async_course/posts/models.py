@@ -73,13 +73,9 @@ class Post(PandocMarkdownModel):
         return lede_words
 
     def interested_people(self):
-        if self.is_root() and self.author.profile.is_teacher:
-            return User.objects.all()
-        else:
-            return set(
-                list(User.objects.filter(profile__is_teacher=True).all()) + 
-                [post.author for post in self.tree()]
-            )
+        """Returns a list of people who are defined as interested in this object.
+        """
+        return User.objects.all()
 
     class Meta:
         ordering = ["-priority",]
