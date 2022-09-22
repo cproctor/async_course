@@ -35,7 +35,7 @@ class Post(PandocMarkdownModel):
         return (
             1 + 
             self.descendents.count() + 
-            self.upvotes.count() + 
+            2 * self.upvotes.count() + 
             self.publications.count()
         )
 
