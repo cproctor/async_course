@@ -42,6 +42,8 @@ class ReviewerRole(models.Model):
             auth_reviews = sum([list(rr.reviews.all()) for rr in rrs], [])
             if auth_reviews:
                 return self.Status.WAITING_FOR_SUBMISSION
+            elif not self.reviews.exists():
+                return self.Status.WAITING_FOR_REVIEW
             else:
                 last_submission_date = subs.last().date_created
                 last_review_date = self.reviews.last().date_created
