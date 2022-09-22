@@ -40,15 +40,15 @@ class ReviewerRole(models.Model):
         elif not self.reviews.exists():
             return self.Status.WAITING_FOR_REVIEW
         else:
-            last_submission_date = subs.last().date_created
-            last_review_date = self.reviews.last().date_created
-            if last_submission_date > last_review_date:
-                return self.Status.WAITING_FOR_REVIEW
+            rrs = self.adjacent(authoritative=True)
+            auth_reviews = sum([list(rr.reviews.all()) for rr in rrs], [])
+            if auth_reviews:
+                return self.Status.WAITING_FOR_SUBMISSION
             else:
-                rrs = self.adjacent(authoritative=True)
-                auth_reviews = sum([list(rr.reviews.all()) for rr in rrs], [])
-                if auth_reviews:
-                    return self.Status.WAITING_FOR_SUBMISSION
+                last_submission_date = subs.last().date_created
+                last_review_date = self.reviews.last().date_created
+                if last_submission_date > last_review_date:
+                    return self.Status.WAITING_FOR_REVIEW
                 else:
                     return self.Status.WAITING_FOR_TEACHER_REVIEW
 
