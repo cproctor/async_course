@@ -87,7 +87,6 @@ class EditPost(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
         form = self.get_form_class()(self.request.POST, instance=obj)
         if form.is_valid():
             obj = form.save(commit=False)
-            obj.author = self.request.user
             obj.compile_markdown()
             obj.save()
             return redirect("posts:detail", pk=obj.id)
