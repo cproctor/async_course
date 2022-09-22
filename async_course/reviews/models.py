@@ -46,7 +46,7 @@ class ReviewerRole(models.Model):
                 return self.Status.WAITING_FOR_REVIEW
             else:
                 rrs = self.adjacent(authoritative=True)
-                auth_reviews = sum([rr.reviews.all() for rr in rrs], [])
+                auth_reviews = sum([list(rr.reviews.all()) for rr in rrs], [])
                 if auth_reviews:
                     return self.Status.WAITING_FOR_SUBMISSION
                 else:
