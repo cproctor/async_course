@@ -17,7 +17,8 @@ class ReviewerRole(models.Model):
     class Status(models.TextChoices):
         NOT_STARTED = '0', "Not started"
         WAITING_FOR_REVIEW = '1', "Waiting for review"
-        WAITING_FOR_SUBMISSION = '2', "Waiting for submission"
+        WAITING_FOR_TEACHER_REVIEW = '4', "Waiting for teacher review"
+        WAITING_FOR_SUBMISSION = '2', "Waiting for new submission"
         COMPLETE = '3', "Complete"
 
     status = models.CharField(max_length=1, choices=Status.choices, default=Status.NOT_STARTED)
@@ -32,24 +33,32 @@ class ReviewerRole(models.Model):
 
     def get_status(self):
         subs = self.assignment.submissions.filter(author=self.reviewed)
-        if subs.filter(reviews__accepted=True):
-            return self.Status.COMPLETE
-        elif not subs.exists():
+        if not subs.exists():
             return self.Status.NOT_STARTED
+        elif subs.filter(reviews__accepted=True):
+            return self.Status.COMPLETE
+        elif not self.reviews.exists():
+            return self.Status.WAITING_FOR_REVIEW
         else:
-            if not self.reviews.exists():
-                return self.Status.WAITING_FOR_REVIEW
             last_submission_date = subs.last().date_created
             last_review_date = self.reviews.last().date_created
             if last_submission_date > last_review_date:
                 return self.Status.WAITING_FOR_REVIEW
             else:
-                return self.Status.WAITING_FOR_SUBMISSION
+                rrs = self.adjacent(authoritative=True)
+                auth_reviews = sum([rr.reviews.all() for rr in rrs], [])
+                if auth_reviews:
+                    return self.Status.WAITING_FOR_SUBMISSION
+                else:
+                    return self.Status.WAITING_FOR_TEACHER_REVIEW
 
-    def adjacent(self):
+    def adjacent(self, authoritative=False):
         "Returns reviewer_roles having the same assignment and reviewed"
-        return ReviewerRole.objects.filter(
+        qs = ReviewerRole.objects.filter(
                 assignment=self.assignment, reviewed=self.reviewed)
+        if authoritative:
+            qs = qs.filter(authoritative=True)
+        return qs
 
 class Review(PandocMarkdownModel):
     date_created = models.DateTimeField(auto_now_add=True, null=True)
