@@ -122,10 +122,15 @@ class ShowAssignmentSubmissions(AnalyticsMixin, AssignmentSubmissionsMixin, Form
         review_ids = []
         for rr in self.reviewer_role.adjacent():
             review_ids += [r.id for r in rr.reviews.all()]
-        print("REVIEW IDS", review_ids)
         self.request.user.notifications.filter(
             event__action=Event.EventActions.ADDED_REVIEW,
             event__object_id__in=review_ids,
+            read=False,
+        ).update(read=True)
+        submission_ids = [s.id for s in self.get_queryset()]
+        self.request.user.notifications.filter(
+            event__action=Event.EventActions.ADDED_SUBMISSION,
+            event__object_id__in=submission_ids,
             read=False,
         ).update(read=True)
         return super().get(*args, **kwargs)
