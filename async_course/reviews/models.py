@@ -37,8 +37,6 @@ class ReviewerRole(models.Model):
             return self.Status.NOT_STARTED
         elif subs.filter(reviews__accepted=True):
             return self.Status.COMPLETE
-        elif not self.reviews.exists():
-            return self.Status.WAITING_FOR_REVIEW
         else:
             rrs = self.adjacent(authoritative=True)
             auth_reviews = sum([list(rr.reviews.all()) for rr in rrs], [])
