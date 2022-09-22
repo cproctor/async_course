@@ -16,7 +16,7 @@ class Command(BaseCommand):
             for user in User.objects.all():
                 try:
                     obj = self.get_object(event)
-                except (NotImplemented, DoesNotExist):
+                except DoesNotExist:
                     event.delete()
                 read = event.notifications.filter(user=user, read=True).exists()
                 event.notifications.filter(user=user).delete()
@@ -33,7 +33,7 @@ class Command(BaseCommand):
         elif event.action == Event.EventActions.ADDED_REVIEW:
             Model = Review
         else:
-            raise NotImplemented(f"No model for {event}")
+            raise DoesNotExist()
         try:
             return Model.objects.get(pk=event.object_id)
         except (Post.DoesNotExist, Submission.DoesNotExist, Review.DoesNotExist):
