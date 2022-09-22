@@ -12,18 +12,16 @@ class Command(BaseCommand):
     help="Recreate notifications based on updated interested_people"
 
     def handle(self, *args, **kwargs):
-        for event in Event.objects.all():
-            for user in User.objects.all():
+        for user in User.objects.all():
+            for event in Event.objects.all():
                 try:
                     obj = self.get_object(event)
+                    read = event.notifications.filter(user=user, read=True).exists()
+                    event.notifications.filter(user=user).delete()
+                    if user in obj.interested_people():
+                        event.notifications.create(user=user, read=read)
                 except DoesNotExist:
                     event.delete()
-                read = event.notifications.filter(user=user, read=True).exists()
-                event.notifications.filter(user=user).delete()
-                #print(f"DELETING {user.username} notifications for {event}. Read={read}")
-                if user in obj.interested_people():
-                    event.notifications.create(user=user, read=read)
-                    #print(f"CREATING notification for {user.username} on {event}, read={read}")
 
     def get_object(self, event):
         if event.action == Event.EventActions.CREATED_POST:
