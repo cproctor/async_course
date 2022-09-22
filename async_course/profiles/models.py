@@ -11,3 +11,6 @@ class Profile(PandocMarkdownModel):
         """Calculates the student's grade"""
         return "Pass"
 
+    def __str__(self):
+        return f"Profile for {self.user.first_name} {self.user.last_name}"
+
