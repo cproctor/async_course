@@ -40,7 +40,7 @@ class ReviewerRole(models.Model):
         elif subs.filter(reviews__accepted=True):
             return self.Status.COMPLETE
         else:
-            elif not self.reviews.exists():
+            if not self.reviews.exists():
                 return self.Status.WAITING_FOR_REVIEW
             else:
                 last_submission_date = subs.last().date_created
