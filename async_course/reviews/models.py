@@ -32,25 +32,32 @@ class ReviewerRole(models.Model):
         )
 
     def get_status(self):
+        """Determines the status of this reviewer role.
+        """
         subs = self.assignment.submissions.filter(author=self.reviewed)
         if not subs.exists():
             return self.Status.NOT_STARTED
         elif subs.filter(reviews__accepted=True):
             return self.Status.COMPLETE
         else:
-            rrs = self.adjacent(authoritative=True)
-            auth_reviews = sum([list(rr.reviews.all()) for rr in rrs], [])
-            if auth_reviews:
-                return self.Status.WAITING_FOR_SUBMISSION
             elif not self.reviews.exists():
                 return self.Status.WAITING_FOR_REVIEW
             else:
                 last_submission_date = subs.last().date_created
                 last_review_date = self.reviews.last().date_created
-                if last_submission_date > last_review_date:
-                    return self.Status.WAITING_FOR_REVIEW
+                rrs = self.adjacent(authoritative=True)
+                auth_reviews = sum([list(rr.reviews.all()) for rr in rrs], [])
+                last_auth_review_date = None
+                for review in auth_reviews:
+                    if not last_auth_review_date or review.date_created > last_auth_review_date:
+                        last_auth_review_date = review.date_created
+                if last_auth_review_date and last_auth_review_date > last_submission_date:
+                    return self.Status.WAITING_FOR_SUBMISSION
                 else:
-                    return self.Status.WAITING_FOR_TEACHER_REVIEW
+                    if not last_auth_review_date or last_auth_review_date < last_review_date:
+                        return self.Status.WAITING_FOR_TEACHER_REVIEW
+                    else:
+                        return self.Status.WAITING_FOR_REVIEW
 
     def adjacent(self, authoritative=False):
         "Returns reviewer_roles having the same assignment and reviewed"
