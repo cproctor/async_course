@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from events.models import Event
 from analytics.mixins import AnalyticsMixin
 from reviews.email import notify_author_of_new_review
+from collections import defaultdict
 
 class ListReviews(LoginRequiredMixin, AnalyticsMixin, ListView):
     context_object_name = 'roles'
@@ -22,6 +23,22 @@ class ListReviews(LoginRequiredMixin, AnalyticsMixin, ListView):
         ).exclude(
             status=ReviewerRole.Status.NOT_STARTED
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        roles = self.get_queryset()
+        roles_by_status = defaultdict(list)
+        for role in roles:
+            roles_by_status[role.get_status_display()].append(role)
+        statuses_to_display = [
+            "Waiting for review", 
+            "Waiting for new submission", 
+            "Waiting for teacher review", 
+            "Complete"
+        ]
+        context['roles_by_status'] = [(s, roles_by_status[s]) for s in 
+                statuses_to_display if roles_by_status[s]]
+        return context
 
 class NewReview(AssignmentSubmissionVersionMixin, AnalyticsMixin, FormView):
     def post(self, *args, **kwargs):
