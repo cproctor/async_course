@@ -1,3 +1,5 @@
 from django.contrib import admin
+from pubref.models import Publication, PublicationFile
 
-# Register your models here.
+admin.site.register(Publication)
+admin.site.register(PublicationFile)
