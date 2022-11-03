@@ -3,6 +3,7 @@ from model_utils.managers import InheritanceManager
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from django.urls import reverse_lazy
 from .pandoc import (
     markdown_to_html, 
@@ -13,15 +14,22 @@ from .formatting import format_bibtex
 from pybtex.database import parse_string
 from pybtex.exceptions import PybtexError
 
+def validate_slug(value):
+    if not re.match('^[-\w]+$', value):
+        raise ValidationError(f"'{value}' is not a valid citation key. Only numbers, letters, hyphens, and underscores are allowed.")
+
 class Publication(models.Model):
-    slug = models.CharField(max_length=40, db_index=True, unique=True)
+    slug = models.CharField(max_length=40, db_index=True, unique=True, validators=[validate_slug])
     bibtex = models.TextField()
     apa_html = models.TextField()
     apa_text = models.TextField()
     contributor = models.ForeignKey(User, related_name="publications", 
             on_delete=models.CASCADE, null=True)
 
-    slug_pattern = "@[0-9a-z_]+"
+    slug_pattern = "@[0-9a-z_\-]+"
+
+    def __str__(self):
+        return self.slug
 
     @classmethod
     def export_bibliography(cls):
@@ -54,16 +62,31 @@ class Publication(models.Model):
                 pub = Publication(slug=slug, bibtex=entry.to_string('bibtex'), 
                         contributor=contributor)
                 try:
+                    pub.full_clean()
                     pub.apa_html = pub.get_apa()
                     pub.apa_text = pub.get_apa('text')
                     pub.save()
                     results.append({"pub": pub, "result": "created", "message": "OK"})
+                except ValidationError as e:
+                    if 'slug' in e.message_dict:
+                        results.append({
+                            "pub": None, 
+                            "result": "error", 
+                            "message": ''.join(e.message_dict['slug'])
+                        })
+                    else:
+                        results.append({
+                            "pub": None, 
+                            "result": "error", 
+                            "message": e
+                        })
                 except PybtexError as e:
                     results.append({
                         "pub": pub, 
                         "result": "error", 
                         "message": e
-                        })
+                    })
+        print(results)
         return results
 
     class InvalidBibtex(Exception):
