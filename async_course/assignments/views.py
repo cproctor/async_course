@@ -95,7 +95,7 @@ class EditAssignment(AnalyticsMixin, TeacherRequiredMixin, UpdateView):
 class ShowAssignment(AnalyticsMixin, LoginRequiredMixin, DetailView):
     model = Assignment
 
-class ShowAssignmentRoster(AnalyticsMixin, DetailView):
+class ShowAssignmentRoster(AnalyticsMixin, TeacherRequiredMixin, DetailView):
     queryset = Assignment.objects.filter(has_submissions=True)
     template_name = "assignments/assignment_roster.html"
 

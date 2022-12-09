@@ -14,7 +14,7 @@
           </a>
         </li>
       {% else %}
-        {% if assn.has_submissions %}
+        {% if assn.has_submissions and user.profile.is_teacher %}
           <li><a href="{% url 'assignments:roster' assn.slug %}">{{assn.title}}</a></li>
         {% else %}
           <li><a href="{% url 'assignments:detail' assn.slug %}">{{assn.title}}</a></li>
