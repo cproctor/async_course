@@ -16,13 +16,17 @@ class Command(BaseCommand):
                         assignment=assignment,
                     )
                     role.authoritative = True
+                    role.status = role.get_status()
                     role.save()
                     ReviewerRole.objects.get_or_create(
                         reviewer=student,
                         reviewed=student,
                         assignment=assignment,
                     )
-                    if student.groups.exists():
+                    role.authoritative = False
+                    role.status = role.get_status()
+                    role.save()
+                    if assignment.peer_review and student.groups.exists():
                         group = student.groups.first()
                         for peer in group.user_set.exclude(username=student.username).all():
                             ReviewerRole.objects.get_or_create(
@@ -30,6 +34,9 @@ class Command(BaseCommand):
                                 reviewed=student,
                                 assignment=assignment,
                             )
+                            role.authoritative = False
+                            role.status = role.get_status()
+                            role.save()
 
 
 
