@@ -107,12 +107,24 @@ sudo systemctl start nginx
 sudo systemctl status nginx
 ```
 
-
 - Set debug to False
 
 ## Future refactoring
 
-I want to factor out apps containing functionality I use frequently. These include:
-- analytics (AnalyticsMixin)
-- profiles (called roles in cognitive_apprenticeship; models, views, mixins, signals)
-- common (email)
+- Add a `StudentAssignment` model with status. Currently, we handle this implicitly and it's a mess.
+  - Refactor models. 
+    - Submission should have a ForeignKey to StudentAssignment. 
+      - Submission should have "uploader" field.
+      - In assignment submission timeline, show timestamps. Also show who uploaded which versions. 
+        - Email notifications and their recipients need to accurately represent who uploaded which versions. 
+    - StudentAssignment should have a status field with default.
+  - Refactor views.
+    - Model instance lookups will get much simpler. 
+    - Check whether any mixins are affected.
+    - Update situations in views where student assignemnt status should be updated.
+      - Ensure that when an assignemnt acceptance has been manually overridden, 
+  - Refactor templates to more clearly articulate assignment status. The assignment list page should double as a gradebook.
+  - Remove unnecessary management commands.
+- Allow for deletion of comments and submissions.
+- Apparently when I edit a review, it updates the author as well. This isn't what I intended!
+- Settings.POST_UPVOTE_HOUR_LIMIT is mis-named.
