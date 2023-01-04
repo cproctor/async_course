@@ -128,3 +128,35 @@ sudo systemctl status nginx
 - Allow for deletion of comments and submissions.
 - Apparently when I edit a review, it updates the author as well. This isn't what I intended!
 - Settings.POST_UPVOTE_HOUR_LIMIT is mis-named.
+
+## TO-DO list preparing for 2023 spring
+
+- Assignment object should have a string representation
+- Publication creation should not allow slugs which can't be expressed in a URL. The site crashed with: 'jbp:/content/journals/10.1075/jnlh.7.02nar' (#1)
+- In assignment thread:
+  - Show a breadcrumb to past assignments (when a reviewerRole relationship exists).
+- Make profile properties optional. 
+- Show grades (including points)
+- Make sure assignments without peer review don't show up for peers (this would be an issue with reviewer roles.)
+
+URGENT
+- Users who are not students are currently shown the roster page 
+  (and students presumably could see the roster page.) When landing on an assignment, students should see the description (if they have a submission); teachers should see the roster; and non-students should see the description. 
+
+## Curricular revision: 
+
+- Move in a gradient from methods when we already know quite a bit about the situation, to those where we know very little. 
+
+  - case study
+  - narrative
+  - ethnography
+  - phenomenology
+  - grounded theory
+
+## TO-DO list initializing 2023 Spring
+
+- Send out to all students the intro survey
+- Make some pages publicly visible
+  - Add a Boolean field on the Page model
+  - in the logged-out view, show pages which are on menu and public
+- Upload CSV of students.
