@@ -11,8 +11,6 @@
   {% endfor %}
   {% include "assignments/partials/review_form.html" with reply=submission.reviews.exists %}
 {% endfor %}
-{% if status != "COMPLETE" %}
-    {% include "assignments/partials/submission_form.html" %}
-{% endif %}
+{% include "assignments/partials/submission_form.html" %}
 </div>
 {% endblock %}
