@@ -16,6 +16,9 @@ class Assignment(PandocMarkdownModel):
     has_submissions = models.BooleanField(default=True)
     peer_review = models.BooleanField(default=False)
 
+    def __str__(self):
+        return self.title
+
     assignment_statuses = ['NOT_STARTED', 'STARTED', 'COMPLETE']
     def get_status(self, user):
         """Returns the user's status for the current assignemnt.

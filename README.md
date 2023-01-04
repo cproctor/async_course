@@ -131,7 +131,6 @@ sudo systemctl status nginx
 
 ## TO-DO list preparing for 2023 spring
 
-- Assignment object should have a string representation
 - Publication creation should not allow slugs which can't be expressed in a URL. The site crashed with: 'jbp:/content/journals/10.1075/jnlh.7.02nar' (#1)
 - In assignment thread:
   - Show a breadcrumb to past assignments (when a reviewerRole relationship exists).
