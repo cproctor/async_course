@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from pubref.models import PandocMarkdownModel
 from assignments.models import Assignment
 from django.db.models import Q
+import arrow
 
 class ReviewerRole(models.Model):
     reviewer = models.ForeignKey(User, related_name="reviewer_roles", 
@@ -81,6 +82,9 @@ class Review(PandocMarkdownModel):
             people.add(role.reviewer)
             people.add(role.reviewed)
         return people
+
+    def humanized_creation_date(self):
+        return arrow.get(self.date_created).humanize()
 
     class Meta:
         ordering = ['date_created']

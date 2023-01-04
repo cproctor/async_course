@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.validators import FileExtensionValidator
 from django.db.models import Q
+import arrow
 
 class Assignment(PandocMarkdownModel):
     due_date = models.DateTimeField(null=True, blank=True)
@@ -98,4 +99,7 @@ class Submission(models.Model):
         """Returns the next version number for the author and assignment.
         """
         return Submission.objects.filter(author=author, assignment=assignment).count()
+
+    def humanized_creation_date(self):
+        return arrow.get(self.date_created).humanize()
 

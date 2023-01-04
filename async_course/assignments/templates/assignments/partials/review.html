@@ -1,10 +1,11 @@
 <div class="review">
-    <div class="review-author">
+    <div class="review-metadata">
         {{review.reviewer_role.reviewer.first_name}}
-        {{review.reviewer_role.reviewer.last_name}}
+        {{review.reviewer_role.reviewer.last_name}} |
+        {{review.humanized_creation_date}}
+        {% if user.profile.is_teacher or user == review.reviewer_role.reviewer %}
+            | <a href="{% url 'reviews:edit' review.id %}">Edit</a>
+        {% endif %}
     </div>
-    {% if user.profile.is_teacher or user == review.reviewer_role.reviewer %}
-        <a href="{% url 'reviews:edit' review.id %}">Edit</a>
-    {% endif %}
     {{review.html|safe}}
 </div>

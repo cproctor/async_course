@@ -1,5 +1,5 @@
 <div class="submission">
     <a href="{% url 'assignments:download_submission' assignment.slug author.username submission.version %}">
-        Version {{submission.version}}
+        Version {{submission.version}} | {{submission.humanized_creation_date}}
     </a>
 </div>
