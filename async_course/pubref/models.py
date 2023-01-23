@@ -62,9 +62,9 @@ class Publication(models.Model):
                 pub = Publication(slug=slug, bibtex=entry.to_string('bibtex'), 
                         contributor=contributor)
                 try:
-                    pub.full_clean()
                     pub.apa_html = pub.get_apa()
                     pub.apa_text = pub.get_apa('text')
+                    pub.full_clean()
                     pub.save()
                     results.append({"pub": pub, "result": "created", "message": "OK"})
                 except ValidationError as e:
@@ -86,7 +86,6 @@ class Publication(models.Model):
                         "result": "error", 
                         "message": e
                     })
-        print(results)
         return results
 
     class InvalidBibtex(Exception):
