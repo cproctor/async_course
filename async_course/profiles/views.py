@@ -96,7 +96,7 @@ class EditProfile(AuthorOrTeacherRequiredMixin, AnalyticsMixin, UpdateView):
             }
             return render(self.request, self.template_name, context)
 
-class ChangePassword(AnalyticsMixin, PasswordChangeView):
+class ChangePassword(LoginRequiredMixin, AnalyticsMixin, PasswordChangeView):
     template_name = "profiles/password_form.html"
     success_url = '/'
 
@@ -111,4 +111,8 @@ class ChangePassword(AnalyticsMixin, PasswordChangeView):
         if result.status_code == 302:
             messages.info(self.request, "You changed your password.")
         return result
+
+    def get_success_url(self):
+        return reverse_lazy('profiles:detail', args=[self.request.user.username])
+
 
